@@ -8,4 +8,4 @@ dependencies = []
 tm = "timemachine.cli:main"
 
 [tool.setuptools]
-packages = ["timemachine"]
+packages = ["timemachine", "timemachine.kb"]

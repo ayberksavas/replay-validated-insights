@@ -13,6 +13,7 @@ Spec of inputs, outputs and ground-truth rules: `PROJECT.pdf`. Original notes: `
 - `docs/GROUND_TRUTH.md`: how each output is labeled by the oracle, and its weaknesses.
 - `docs/HOWTO.md`: setup, ingest, replay, writing your own `Predictor`.
 - `docs/ROADMAP.md`: prioritized next steps.
+- `docs/INSIGHT_PLAN.md`: design and task list for the insight system.
 
 ## Quick start
 ```

@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from .ingest_git import ingest_git
 from .ingest_github import ingest_github
 from .predictor import RandomBaseline, MostChangedFiles
+from .heuristics import KBHeuristic
 from .evaluate import replay
 from .groundtruth import DAY
 from .snapshot import export_snapshot
@@ -48,5 +49,5 @@ def main():
         print(f"{a.out}: tree of {sha} (last commit at or before {a.at})")
     else:
         ts = list(range(parse_date(a.start), parse_date(a.end), a.every_days * DAY))
-        for p in (RandomBaseline(), MostChangedFiles()):
+        for p in (RandomBaseline(), MostChangedFiles(), KBHeuristic()):
             print(json.dumps(replay(db, repo, p, ts, window_days=a.window_days), indent=2))

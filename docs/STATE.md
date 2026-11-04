@@ -11,8 +11,10 @@
 - `data/` (clones, `tm.db`) is gitignored and regenerable; it is not in git.
 - `tm snapshot`: exports the code as of T into a fresh repo for a coding agent, so `.git` cannot reveal later commits. Network/filesystem isolation of the agent is still up to the runner (see HOWTO).
 
+- Insight system groundwork (no LLM yet): `timemachine/kb/` (file history, commit/issue links, pre-T fix memory, BM25 issue search) and `KBHeuristic` baseline. Plan and task status: `docs/INSIGHT_PLAN.md`.
+
 ## Not done
-- **The actual insight system** (Claude-backed `Predictor` + knowledge base). Nothing here uses an LLM yet.
+- **The Claude-backed `Predictor`** (tools layer, agent, `InsightPredictor`). Nothing here uses an LLM yet; the knowledge base exists. `KBHeuristic` has not been run on real data yet.
 - Output 4 (similar bug from diffs), 5 (outdated docs), 7 (requirement vs implementation), 6 / Input 5 (CI data). Core tier is Outputs 1-4, Inputs 1-4.
 - PR data beyond comments: PR-to-commit links, merge commits, PR descriptions are only in `issues` (is_pr=1); no PR->commit mapping.
 - Repo selection, incl. repos/periods after the model's training cutoff (memorization check in spec).
@@ -35,10 +37,10 @@
 
 ## Results so far (pallets/click, T every 60 days 2021-01 to 2025-06, window 180d, lookback 30d, flag top 20%)
 Averaged over replay points that have at least one positive (rule changed 2026-11-04; earlier numbers counted empty points as 0 and were understated: 0.01/0.083, 0.16/0.29).
-| | random | most-changed-files |
-|---|---|---|
-| Out1 F1 (10 positives, 6 points) | 0.042 | 0.333 |
-| Out2 F1 (72 positives, 15 points) | 0.256 | 0.464 |
-| Out3 hit@5 (15 dup issues, 10 points) | 0.0 | 0.167 |
+| | random | most-changed-files | kb_heuristic |
+|---|---|---|---|
+| Out1 F1 (10 positives, 6 points) | 0.042 | 0.333 | 0.444 |
+| Out2 F1 (72 positives, 15 points) | 0.256 | 0.464 | 0.481 |
+| Out3 hit@5 (15 dup issues, 10 points) | 0.0 | 0.167 | 0.45 |
 
 Tiny sample sizes; treat as smoke test, not a benchmark. The proposal's Table 2 still shows the old averaging and should be updated.
