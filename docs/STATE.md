@@ -6,7 +6,8 @@
 - `TimeView`: leak-proof snapshot at T, the only thing a predictor may touch.
 - `Oracle`: ground truth for Outputs 1 (SZZ), 2, 3.
 - Evaluation loop with precision/recall/F1, lead time, hit@k; two baselines (random, most-changed-files).
-- CLI (`tm ingest`, `tm replay`) and one leakage test.
+- CLI (`tm ingest`, `tm replay`, `tm snapshot`) and leakage tests (TimeView commits; snapshot has no future objects/refs/source path).
+- `tm snapshot`: exports the code as of T into a fresh repo for a coding agent, so `.git` cannot reveal later commits. Network/filesystem isolation of the agent is still up to the runner (see HOWTO).
 
 ## Not done
 - **The actual insight system** (Claude-backed `Predictor` + knowledge base). Nothing here uses an LLM yet.

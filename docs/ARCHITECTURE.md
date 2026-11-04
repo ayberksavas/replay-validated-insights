@@ -16,7 +16,8 @@ Data lives in `data/<owner>__<repo>/{repo,tm.db}` (gitignore it).
 - `predictor.py`: `Flag(target, score)` and `Predictor` with `risky_commits`, `missing_tests`, `similar_issues`. Baselines here.
 - `groundtruth.py`: `Oracle`, full-history labeler (never give it to a predictor).
 - `evaluate.py`: `replay(...)` loop and metric aggregation.
-- `cli.py`: `tm ingest`, `tm replay`.
+- `snapshot.py`: `export_snapshot(repo, T, dest, history=False)`. Writes the code as of T to a fresh git repo for an agent to work in (no remote/tags/reflog/future objects). Use this, never a checkout of the full clone.
+- `cli.py`: `tm ingest`, `tm replay`, `tm snapshot`.
 
 ## Leakage rule (spec: "enforced in code")
 Predictors receive only a `TimeView`. Do not pass them the db path, repo path, or an `Oracle`. If you add a data source, add it to `TimeView._copy` with a timestamp filter and add a test in `tests/test_leakage.py`. Anything an agent can shell out to (e.g. running `git` on the clone itself) bypasses the guarantee, so agent tools must be built on `TimeView` methods only.
