@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.DS_Store
+.pytest_cache/
+# regenerable: tm ingest <owner/repo>
+data/
