@@ -9,6 +9,7 @@ from .predictor import RandomBaseline, MostChangedFiles
 from .evaluate import replay
 from .groundtruth import DAY
 from .snapshot import export_snapshot
+from .gitutil import require_repo, GitError
 
 
 def parse_date(s):
@@ -32,7 +33,12 @@ def main():
     d = os.path.join(a.workdir, a.slug.replace("/", "__")); os.makedirs(d, exist_ok=True)
     repo, db = os.path.join(d, "repo"), os.path.join(d, "tm.db")
     if a.cmd == "ingest":
-        if not os.path.exists(repo):
+        try:
+            require_repo(repo)
+        except GitError:
+            if os.path.isdir(repo) and os.listdir(repo):
+                raise SystemExit(f"{repo} exists, is not empty and is not a git clone; remove it first")
+            os.makedirs(repo, exist_ok=True)
             subprocess.run(["git", "clone", "--quiet", f"https://github.com/{a.slug}.git", repo], check=True)
         print("commits:", ingest_git(repo, db))
         if not a.no_github:

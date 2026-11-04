@@ -49,3 +49,12 @@ def test_snapshot_has_no_future(repo, history):
 def test_snapshot_refuses_dest_inside_clone(repo):
     with pytest.raises(ValueError):
         export_snapshot(repo, 1580000000, os.path.join(repo, "snap"))
+
+
+def test_view_cannot_attach_full_db(repo):
+    import sqlite3
+    db = os.path.join(repo, "..", "t2.db"); ingest_git(repo, db)
+    v = TimeView(db, repo, 1580000000)
+    with pytest.raises(sqlite3.DatabaseError):
+        v.db.execute(f"ATTACH DATABASE '{db}' AS full")
+    assert len(v.commits()) == 1

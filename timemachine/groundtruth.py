@@ -1,9 +1,9 @@
 """Oracle: sees the FULL history and labels what *actually* happened in (T, T+window].
 Never imported by predictors."""
 import re
-import subprocess
 from functools import lru_cache
 from .store import connect
+from .gitutil import run_git, require_repo
 
 FIX_RE = re.compile(r"\b(fix(e[sd])?|bug(fix)?|hotfix|regression|resolve[sd]?|patch)\b", re.I)
 DUP_RE = re.compile(r"duplicate\s+of\s+#(\d+)|dup(licate)?\s*(of)?:?\s*#(\d+)", re.I)
@@ -12,12 +12,12 @@ DAY = 86400
 
 class Oracle:
     def __init__(self, db_path: str, repo: str):
+        require_repo(repo)
         self.db, self.repo = connect(db_path), repo
         self._szz_cache = {}
 
     def _git(self, *a):
-        return subprocess.run(["git", "-C", self.repo, *a], capture_output=True,
-                              text=True, errors="replace").stdout
+        return run_git(self.repo, *a)
 
     # ---- bug-fix commits & SZZ ----
     def fix_commits(self, t0, t1):
@@ -34,6 +34,9 @@ class Oracle:
         if fix_sha in self._szz_cache:
             return self._szz_cache[fix_sha]
         out, path = set(), None
+        if not self._git("rev-list", "--parents", "-n", "1", fix_sha).split()[1:]:
+            self._szz_cache[fix_sha] = out  # root commit: no parent to blame
+            return out
         diff = self._git("diff", "-U0", "--no-renames", f"{fix_sha}^", fix_sha)
         for line in diff.splitlines():
             if line.startswith("--- a/"):

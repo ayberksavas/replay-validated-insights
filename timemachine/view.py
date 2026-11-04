@@ -3,8 +3,8 @@ the snapshot is physically materialized with rows where ts <= T, and git access 
 commits inside that snapshot."""
 import json
 import sqlite3
-import subprocess
 from .store import SCHEMA, connect
+from .gitutil import run_git, require_repo
 
 
 class LeakageError(Exception):
@@ -14,6 +14,7 @@ class LeakageError(Exception):
 class TimeView:
     def __init__(self, db_path: str, repo: str, as_of: int):
         self.as_of = as_of
+        require_repo(repo)
         self.__repo = repo  # name-mangled; predictors never receive a path
         src = connect(db_path)
         self.db = sqlite3.connect(":memory:")
@@ -28,6 +29,8 @@ class TimeView:
         self.db.commit()
         src.close()
         self.db.execute("PRAGMA query_only=ON")
+        # a predictor must not be able to ATTACH the full database (or any file) and read the future
+        self.db.set_authorizer(lambda action, *_: sqlite3.SQLITE_DENY if action == sqlite3.SQLITE_ATTACH else sqlite3.SQLITE_OK)
 
     def _copy(self, src, table, where, params):
         rows = src.execute(f"SELECT * FROM {table} WHERE {where}", params).fetchall()
@@ -72,8 +75,7 @@ class TimeView:
             raise LeakageError(f"commit {sha} is not visible at T={self.as_of}")
 
     def _git(self, *args):
-        return subprocess.run(["git", "-C", self.__repo, *args], capture_output=True,
-                              text=True, errors="replace").stdout
+        return run_git(self.__repo, *args)
 
     def diff(self, sha):
         self._check(sha)
