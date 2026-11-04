@@ -29,6 +29,8 @@ class TimeView:
         self.db.commit()
         src.close()
         self.db.execute("PRAGMA query_only=ON")
+        # a predictor must not be able to ATTACH the full database (or any file) and read the future
+        self.db.set_authorizer(lambda action, *_: sqlite3.SQLITE_DENY if action == sqlite3.SQLITE_ATTACH else sqlite3.SQLITE_OK)
 
     def _copy(self, src, table, where, params):
         rows = src.execute(f"SELECT * FROM {table} WHERE {where}", params).fetchall()

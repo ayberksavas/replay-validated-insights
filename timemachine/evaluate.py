@@ -26,12 +26,14 @@ def replay(db_path, repo, predictor, replay_times, window_days=180, lookback_day
         buggy = {s: t for s, t in oracle.buggy_commits(T, window_days).items() if s in shas}
         flags = sorted(predictor.risky_commits(view, cands), key=lambda f: -f.score)[:n_top]
         flagged = {f.target for f in flags}
-        rows["risky"].append(prf(flagged, set(buggy)) + (len(cands), len(buggy)))
+        if buggy:  # no positives at this T: precision/recall are undefined, so skip rather than score 0
+            rows["risky"].append(prf(flagged, set(buggy)) + (len(cands), len(buggy)))
         lead += [(buggy[s] - T) / DAY for s in flagged & set(buggy)]
         # Output 2
         covered = oracle.untested_later_covered(T, window_days, shas)
         flags = sorted(predictor.missing_tests(view, cands), key=lambda f: -f.score)[:n_top]
-        rows["tests"].append(prf({f.target for f in flags}, set(covered)) + (len(cands), len(covered)))
+        if covered:
+            rows["tests"].append(prf({f.target for f in flags}, set(covered)) + (len(cands), len(covered)))
         # Output 3: each new issue is queried with the view as of just before its creation
         new = oracle.db.execute("SELECT * FROM issues WHERE is_pr=0 AND ts>? AND ts<=?", (T, T + lookback_days * DAY)).fetchall()
         hits = tot = 0
@@ -52,8 +54,8 @@ def summarize(rows, lead, name):
     return {
         "predictor": name,
         "output1_risky_change": {"precision": avg(rows["risky"], 0), "recall": avg(rows["risky"], 1), "f1": avg(rows["risky"], 2),
-                                  "positives": sum(r[4] for r in rows["risky"]), "median_lead_days": round(statistics.median(lead), 1) if lead else None},
+                                  "positives": sum(r[4] for r in rows["risky"]), "replay_points": len(rows["risky"]), "median_lead_days": round(statistics.median(lead), 1) if lead else None},
         "output2_missing_tests": {"precision": avg(rows["tests"], 0), "recall": avg(rows["tests"], 1), "f1": avg(rows["tests"], 2),
-                                   "positives": sum(r[4] for r in rows["tests"])},
-        "output3_similar_issue_hit@k": {"hit_rate": avg(rows["dups"], 0), "n_dup_issues": sum(r[1] for r in rows["dups"])},
+                                   "positives": sum(r[4] for r in rows["tests"]), "replay_points": len(rows["tests"])},
+        "output3_similar_issue_hit@k": {"hit_rate": avg(rows["dups"], 0), "n_dup_issues": sum(r[1] for r in rows["dups"]), "replay_points": len(rows["dups"])},
     }
