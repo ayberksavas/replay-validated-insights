@@ -1,6 +1,7 @@
 import re
 import subprocess
 from .store import connect
+from .gitutil import require_repo
 
 TEST_RE = re.compile(r"(^|/)(tests?|__tests__|spec)(/|$)|(^|/)test_[^/]*$|_test\.[a-z]+$|\.(test|spec)\.[a-z]+$", re.I)
 DOC_RE = re.compile(r"(^|/)(docs?|documentation)(/|$)|\.(md|rst|adoc|txt)$|(^|/)readme", re.I)
@@ -14,6 +15,7 @@ def git(repo, *args):
 
 
 def ingest_git(repo: str, db_path: str):
+    require_repo(repo)
     db = connect(db_path)
     fmt = SEP + "%H\x1f%ct\x1f%at\x1f%an\x1f%P\x1f%B\x1f"
     out = git(repo, "log", "--all", "--no-merges", "-M", "--numstat", f"--format={fmt}")
