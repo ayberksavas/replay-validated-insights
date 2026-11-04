@@ -33,6 +33,8 @@ T picks the last first-parent commit on the default branch with committer time <
 The snapshot only closes the git leak. The agent must also not reach the network (GitHub, PyPI: `pip install <the package>` fetches the latest source), the full clone under `data/`, or `tm.db`. Run it in a container that mounts only the snapshot, with dependencies pinned to T and outbound traffic limited to the model API.
 
 ## Gotchas
-- `tm ingest` can take minutes on issue-heavy repos; re-running re-fetches everything.
+- `tm ingest` can take minutes on issue-heavy repos (click ~7 min, almost all in the GitHub step); re-running re-fetches everything. `--no-github` only clones and re-reads git.
+- Run `tm` from the project root (`data/` is relative) or pass `--workdir`. `tm replay`/`snapshot` need `tm ingest` first; without the clone they stop with `GitError`.
+- `data/` is gitignored. A fresh checkout has no `tm.db`; ingest it yourself or get a copy from a teammate (it holds contributor names and comment text, so do not publish it).
 - The package imports `Oracle` only in `evaluate.py`. Keep it out of predictor code.
 - `data/` is large and regenerable; do not commit it.

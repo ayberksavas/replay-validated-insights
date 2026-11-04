@@ -12,7 +12,8 @@ Data lives in `data/<owner>__<repo>/{repo,tm.db}` (gitignore it).
 ## Modules (`timemachine/`)
 - `store.py`: schema. Every table has `ts` = when the fact became visible. Tables: `commits`, `commit_files` (flags `is_test`, `is_doc` by path regex), `issues` (issues and PRs, `is_pr`), `issue_events` (closed/reopened/labeled/... as separate timestamped rows; `data` JSON has `commit_id`, `label`), `comments` (`kind` issue|review).
 - `ingest_git.py`, `ingest_github.py`: fill the store.
-- `view.py`: `TimeView(db, repo, as_of)`. Copies only rows with ts <= T into an in-memory DB (read-only). Methods: `commits`, `files`, `issues`, `issue_state` (state/labels rebuilt from events <= T), `comments`, `diff(sha)`, `file_at(sha, path)`. The last two raise `LeakageError` for commits not in the snapshot. The repo path is name-mangled and never given to predictors.
+- `gitutil.py`: `run_git` (raises `GitError` on any failure) and `require_repo` (the path must itself be a git clone, not an empty dir inside another repo). Use these instead of raw `subprocess`, so a missing clone fails loudly.
+- `view.py`: `TimeView(db, repo, as_of)`. Copies only rows with ts <= T into an in-memory DB (read-only). Methods: `commits`, `files`, `issues`, `issue_state` (state/labels rebuilt from events <= T), `comments`, `diff(sha)`, `file_at(sha, path)`. The last two raise `LeakageError` for commits not in the snapshot. `ATTACH` is denied, so the full DB cannot be attached. The repo path is name-mangled and never given to predictors (a convention only: in-process code can still reach it, so real isolation needs a separate process/container).
 - `predictor.py`: `Flag(target, score)` and `Predictor` with `risky_commits`, `missing_tests`, `similar_issues`. Baselines here.
 - `groundtruth.py`: `Oracle`, full-history labeler (never give it to a predictor).
 - `evaluate.py`: `replay(...)` loop and metric aggregation.
