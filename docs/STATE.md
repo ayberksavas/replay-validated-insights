@@ -15,7 +15,7 @@
 - Tests: 34 (incremental KB == rebuilt KB; sandbox store == TimeView at every T; incremental replay == rebuild replay for all baselines; leak probe; snapshot has no future objects; LLM gateway caching/budget/request shape with a fake client; GitHub ingest full + incremental with canned pages).
 
 ## Not done
-- **Live Claude run**: everything LLM-side is tested with a fake client only. Needs `ANTHROPIC_API_KEY`.
+- **Live Claude on Opus 5.5**: live runs so far used Claude Haiku 5.5 only (2026-11-11, results below). The 395-PR next-change run has not been run live.
 - **click GitHub data on this machine**: needs `gh auth login` or `GITHUB_TOKEN` (anonymous REST is 60 requests/hour). Until then Output 3 is n/a in `tm demo`.
 - Container runner for the sandbox (Docker with `--network none`, only the sandbox dir mounted). The worker protocol is ready for it; required before giving a shell-capable agent (Claude Code) the sandbox.
 - Output 4 (similar bug from diffs), 5, 7, 6 / Input 5 (CI data).
@@ -28,6 +28,20 @@
 - Output 3 truth can point at an issue newer than the query; `marked_as_duplicate` events are unused.
 - Output 1 positives are few (keyword fix detection); Output 2 truth is heuristic.
 
+## Live Claude results (Claude Haiku 5.5, effort low, 2026-11-11)
+`tm demo ... --llm live --model claude-haiku-5-5` and `tm nextchange ... --kinds issue` (same settings as the tables below). All three runs together cost about $0.10.
+
+| F1 | kb_heuristic | claude_insight (Haiku) | real usage | cost |
+|---|---|---|---|---|
+| python-on-whales Out1 risky change (24 positives, 15 points) | **0.493** | 0.329 | 118k input, 54k cache read, 16k output | $0.02 |
+| python-on-whales Out2 missing tests (146 positives, 40 points) | **0.624** | 0.612 | (same run) | |
+| click Out1 risky change (10 positives, 6 points) | 0.444 | **0.458** | 44k input, 24k cache read, 7k output | $0.01 |
+| click Out2 missing tests (72 positives, 15 points) | **0.481** | 0.441 | (same run) | |
+
+On Outputs 1-2 Haiku does not beat the KB heuristic (much worse on python-on-whales risky change). In `ClaudeInsight` the LLM score alone orders the reviewed commits; blending it with the heuristic score, or a stronger model on a sample, are the next things to try.
+On Output 8 (next code change, 61 issues) Haiku is far better than the heuristic: first guess right 74% vs 46%, patch changed-line F1 0.385 (see `docs/NEXT_CHANGE.md`).
+Real input tokens were about 2x the 4-chars-per-token estimates (code tokenizes densely); output was below the estimate.
+
 ## Results (pallets/click, git data only, T every 60 days 2021-01 to 2025-06, window 180d, lookback 30d, top 20%)
 From `tm demo pallets/click --from 2021-01-01 --to 2025-06-01 --llm dry-run` (incremental, sandboxed):
 | | random | most-changed-files | kb_heuristic | claude_insight (dry run) |
@@ -36,6 +50,6 @@ From `tm demo pallets/click --from 2021-01-01 --to 2025-06-01 --llm dry-run` (in
 | Out2 F1 (72 positives, 15 points) | 0.344 | 0.464 | 0.481 | 0.481 |
 | Out3 hit@5 | needs GitHub data | | | |
 
-Random differs from the 2026-11-04 table because its random stream is no longer shared with Output 3. Dry-run claude_insight is by design identical to kb_heuristic; a live run needs an API key.
+Random differs from the 2026-11-04 table because its random stream is no longer shared with Output 3. Dry-run claude_insight is by design identical to kb_heuristic.
 Incremental run: 27 checkpoints, each sandbox received 1,731 events once vs 40,271 rows a per-checkpoint rebuild copies (23x); ~90 s for 4 predictors.
 Token design (estimates, 4 chars/token): 257 candidates -> 154 sent, 23 requests instead of 257, diffs 1.7 MB -> 65 KB, prompts ~36k tokens vs ~398k naive (-91%).

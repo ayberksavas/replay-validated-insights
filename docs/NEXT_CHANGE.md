@@ -41,15 +41,26 @@ request with 1-2 files or excerpts, JSON-schema output, cached system prompts, r
 Effort `low` for localization, `medium` for the patch. Without an API key Claude is not called and
 `claude_insight` returns the heuristic's ranking (no patch).
 
-## Results: python-on-whales (dry run, no API key)
-`tm nextchange gabrieldemarmiesse/python-on-whales --from 2020-08-01 --to 2026-11-01 --kinds issue --llm dry-run`
+## Results: python-on-whales, 61 issue tasks, live Claude Haiku 5.5 (2026-11-11)
+`tm nextchange gabrieldemarmiesse/python-on-whales --from 2020-08-01 --to 2026-11-01 --kinds issue --llm live --model claude-haiku-5-5 --token-budget 1500000`
 
-| 61 issue tasks | random | most_changed_files | kb_heuristic |
-| --- | --- | --- | --- |
-| hit@1 | 0.082 | 0.082 | 0.459 |
-| hit@3 | 0.164 | 0.311 | 0.738 |
-| recall@5 | 0.167 | 0.349 | 0.659 |
-| MRR | 0.138 | 0.251 | 0.606 |
+| 61 issue tasks | random | most_changed_files | kb_heuristic | claude_insight (Haiku 5.5) |
+| --- | --- | --- | --- | --- |
+| hit@1 | 0.082 | 0.082 | 0.459 | **0.738** |
+| hit@3 | 0.164 | 0.311 | 0.738 | **0.836** |
+| recall@5 | 0.167 | 0.349 | 0.659 | **0.740** |
+| MRR | 0.138 | 0.251 | 0.606 | **0.786** |
+| patch changed-line F1 | | | | 0.385 (47 tasks with a patch) |
+
+- Claude got 19 first guesses right that the heuristic missed, and lost 2 the heuristic had right.
+- 92 search/replace edits applied, 12 dropped (their `find` text did not match the file exactly once).
+- Several patches equal the real fix line for line, e.g. issue #78 (`volumes_from: Optional[str]` to
+  `Optional[List[str]]`), #175 (`extra_hosts` type), #216 (`entrypoint` field).
+- Real usage: 116 API calls (+6 answered from the response cache), 348k input tokens, 90k cache-read
+  tokens, 64k output tokens: **$0.07**, 517 s. The same tokens on Opus 5.5 would cost about $2.7 before
+  any extra thinking.
+- Per-task view with Claude's patch next to the real diff: `data/<owner>__<repo>/nextchange_report.html`
+  (`--html` to choose the path).
 
 `--kinds pr` (every main-line commit with a linked PR or issue, described by its PR; 397 mined, 2 skipped
 because the snapshot at T was not an ancestor of the commit):
@@ -61,12 +72,11 @@ because the snapshot at T was not an ancestor of the commit):
 | recall@5 | 0.100 | 0.363 | 0.636 |
 | MRR | 0.088 | 0.268 | 0.580 |
 
-Estimated live cost (4 chars/token): 61 issue tasks about 393k prompt tokens in 122 requests (vs about
-2.4M if each shortlist were sent in full), roughly $2.4-5.5 on Claude Opus 5.5 depending on output
-length; 395 PR tasks about 2.1M prompt tokens (vs 13.3M naive), so use `--limit` or `--token-budget`.
-Patch quality (line F1) needs a live run.
+The PR tasks have not been run live. Dry-run estimate: about 2.1M prompt tokens (vs 13.3M naive); real
+input tokens came out about 2x the 4-chars-per-token estimate on the issue run, so expect ~$1-2 on
+Haiku 5.5 and far more on Opus 5.5. Use `--limit` and `--token-budget`.
 
 ## Not done
-- A live Claude run (needs `ANTHROPIC_API_KEY`); the patch path is tested with a fake client only.
+- A live run on Opus 5.5, and on the 395 PR tasks.
 - Running the repository's tests on the predicted patch (needs a container per task, e.g. the Docker mode).
 - Tasks are biased to commits whose message or PR links an issue; edited issue text is the latest version.
