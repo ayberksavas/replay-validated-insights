@@ -1,7 +1,9 @@
-"""Small dependency-free BM25 over short documents."""
+"""Small dependency-free BM25 over short documents. Incremental: add() a document at any time;
+idf and average length are computed at query time from running counts, so adding N documents one
+by one gives exactly the same scores as building the index from all N at once."""
 import math
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 
 STOP = frozenset("the a an and or of to in on for with is are was be it this that as at by from not no but if when "
                  "can cant does doesnt dont have has had will would should could you your we our they them there "
@@ -15,29 +17,41 @@ def tokenize(text: str) -> list[str]:
 
 
 class BM25:
-    def __init__(self, docs: dict, k1=1.5, b=0.75):
-        """docs: {doc_id: token list}"""
+    def __init__(self, docs: dict | None = None, k1=1.5, b=0.75):
+        """docs: optional {doc_id: token list} to start with."""
         self.k1, self.b = k1, b
-        self.tf = {d: Counter(t) for d, t in docs.items()}
-        self.len = {d: len(t) for d, t in docs.items()}
-        self.avg = (sum(self.len.values()) / len(docs)) if docs else 0.0
-        df = Counter(w for c in self.tf.values() for w in c)
-        n = len(docs)
-        self.idf = {w: math.log(1 + (n - f + 0.5) / (f + 0.5)) for w, f in df.items()}
-        self.inv = {}
-        for d, c in self.tf.items():
-            for w in c:
-                self.inv.setdefault(w, []).append(d)
+        self.tf, self.len = {}, {}
+        self.df = Counter()
+        self.inv = defaultdict(list)
+        self.total_len = 0
+        for d, toks in (docs or {}).items():
+            self.add(d, toks)
+
+    def __len__(self):
+        return len(self.tf)
+
+    def add(self, doc_id, tokens: list[str]):
+        if doc_id in self.tf:
+            return
+        c = Counter(tokens)
+        self.tf[doc_id], self.len[doc_id] = c, len(tokens)
+        self.total_len += len(tokens)
+        for w in c:
+            self.df[w] += 1
+            self.inv[w].append(doc_id)
 
     def search(self, query_tokens: list[str], k: int, exclude=()) -> list[tuple]:
+        n = len(self.tf)
+        avg = self.total_len / n if n else 0.0
         scores = Counter()
-        for w in set(query_tokens):
-            idf = self.idf.get(w)
-            if idf is None:
+        for w in sorted(set(query_tokens)):     # fixed order: identical float sums in every process
+            f = self.df.get(w)
+            if not f:
                 continue
+            idf = math.log(1 + (n - f + 0.5) / (f + 0.5))
             for d in self.inv[w]:
                 tf = self.tf[d][w]
-                norm = 1 - self.b + self.b * self.len[d] / (self.avg or 1)
+                norm = 1 - self.b + self.b * self.len[d] / (avg or 1)
                 scores[d] += idf * tf * (self.k1 + 1) / (tf + self.k1 * norm)
         for d in exclude:
             scores.pop(d, None)

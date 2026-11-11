@@ -10,42 +10,8 @@ from timemachine.kb.links import refs, closes, is_fix_message
 from timemachine.heuristics import KBHeuristic
 from timemachine.evaluate import replay
 from timemachine.groundtruth import DAY
+from conftest import ts
 
-
-def ts(s): return int(datetime.fromisoformat(s).replace(tzinfo=timezone.utc).timestamp())
-
-
-@pytest.fixture
-def world():
-    d = tempfile.mkdtemp()
-    def git(*a, date="2020-01-01T00:00:00Z"):
-        env = {**os.environ, "GIT_AUTHOR_DATE": date, "GIT_COMMITTER_DATE": date}
-        subprocess.run(["git", "-C", d, *a], check=True, env=env, capture_output=True)
-    git("init", "-q"); git("config", "user.email", "a@b.c"); git("config", "user.name", "a")
-    def commit(msg, files, date):
-        for p, body in files.items():
-            os.makedirs(os.path.dirname(f"{d}/{p}") or d, exist_ok=True)
-            open(f"{d}/{p}", "w").write(body)
-        git("add", "."); git("commit", "-qm", msg, date=date)
-    commit("add parser", {"src/a.py": "a=1\n" * 5, "tests/test_a.py": "t=1\n"}, "2020-01-10T00:00:00Z")
-    commit("Fix crash on empty config, fixes #1", {"src/a.py": "a=2\n" * 5}, "2020-02-10T00:00:00Z")
-    commit("Revert \"Fix crash\"", {"src/a.py": "a=3\n" * 5}, "2020-02-20T00:00:00Z")
-    commit("rewrite parser", {"src/a.py": "b=1\n" * 80, "src/b.py": "c=1\n" * 40}, "2020-03-10T00:00:00Z")
-    commit("update readme", {"README.md": "hello\n"}, "2020-03-12T00:00:00Z")
-    commit("future change", {"src/a.py": "z=1\n"}, "2020-09-01T00:00:00Z")
-    db = os.path.join(d, "..", f"kb{os.path.basename(d)}.db")
-    ingest_git(d, db)
-    c = connect(db)
-    def issue(n, date, title, body): c.execute("INSERT INTO issues VALUES(?,0,?,?,?,?)", (n, ts(date), "u", title, body))
-    issue(1, "2020-02-01T00:00:00Z", "Crash when parsing empty config file", "Parser raises IndexError on an empty config")
-    issue(2, "2020-02-05T00:00:00Z", "Typo in documentation", "readme has a typo")
-    issue(3, "2020-05-01T00:00:00Z", "Parser crashes on empty configuration", "same IndexError as in #1")
-    issue(9, "2020-10-01T00:00:00Z", "future issue", "after T")
-    c.execute("INSERT INTO issue_events VALUES(1,?,?,?,?)", (ts("2020-02-01T01:00:00Z"), "labeled", "m", json.dumps({"label": "bug"})))
-    c.execute("INSERT INTO issue_events VALUES(1,?,?,?,?)", (ts("2020-02-11T00:00:00Z"), "closed", "m", json.dumps({})))
-    c.execute("INSERT INTO comments VALUES(1,3,?,?,?,?)", (ts("2020-06-01T00:00:00Z"), "m", "duplicate of #1", "issue"))
-    c.commit(); c.close()
-    return db, d
 
 
 def view(world, date): return TimeView(world[0], world[1], ts(date))

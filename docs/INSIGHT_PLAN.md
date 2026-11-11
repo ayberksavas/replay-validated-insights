@@ -5,20 +5,20 @@ Goal: a `Predictor` (see `timemachine/predictor.py`) that beats the random and m
 ## Layers
 1. **Knowledge base** (`timemachine/kb/`): deterministic, no LLM, built from one `TimeView`. File history, commit/issue link graph, pre-T bug-fix memory, BM25 over issues.
 2. **Heuristic predictors** (`timemachine/heuristics.py`): KB-feature predictors without LLM. They are the "strong baselines": any LLM gain must be measured against them, not only against random.
-3. **Tools** (`timemachine/tools.py`, later): typed functions over the KB for the agent; every call logged.
-4. **Claude agent** (`timemachine/agent.py`, later): plain Anthropic API tool-use loop; per-candidate evidence packet in, score + rationale out.
-5. **`InsightPredictor`** (later): pre-filter, cache per (T, target), record model/prompt/params.
+3. **Sandbox channel** (`sandbox/`): the only way out of the sandbox; diff/file_at checked against T, LLM via the host gateway.
+4. **`ClaudeInsight`** (`insight.py`): heuristic prefilter, batched evidence packets, score + one-line rationale, BM25-gated issue rerank.
+5. **LLM gateway** (`llm.py`): prompt caching, structured output, response cache, token budget, usage and cost.
 
 ## Tasks and status
 | | Task | Status |
 |---|---|---|
-| C | Heuristic predictors + BM25 issue search | done v1 (`KBHeuristic`, in `tm replay`), not yet run on real data |
-| B | KB v1 (file stats, link graph, fix memory) | done v1, `tests/test_kb.py` |
-| E | Output 3 agent: BM25 retrieve, LLM rerank | not started (needs API key and budget decision) |
-| D | Tools layer + call log + per-tool leakage tests | not started |
-| F | Agent for Outputs 1, 2 | not started |
+| C | Heuristic predictors + BM25 issue search | done v1 (`KBHeuristic`), run on click (git data) |
+| B | KB v1 (file stats, link graph, fix memory) | done, incremental (`kb/base.py`, `tests/test_incremental.py`) |
+| E | Output 3: BM25 retrieve, LLM rerank | done (`insight.py`, gated by BM25 confidence); live run needs an API key |
+| D | Tools layer + call log + per-tool leakage tests | partly: the sandbox channel is the tool boundary (diff/file_at/llm, host-checked); no free-form tool-use loop yet |
+| F | Claude for Outputs 1, 2 | done as one batched review per step (`insight.py`); not a tool-use agent yet |
 | G | Output 4 diff similarity | not started |
-| H | Cost controls, run log, replay vs baselines | not started |
+| H | Cost controls, run log, replay vs baselines | done: prefilter, batching, compact packets, prompt + response cache, budget, usage/cost (`llm.py`, `tm demo`) |
 
 ## Rules
 - KB and predictors import nothing from `groundtruth.py` (the Oracle). Shared regexes are duplicated in `kb/links.py` on purpose.

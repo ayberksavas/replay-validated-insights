@@ -15,7 +15,10 @@ class KBHeuristic(Predictor):
         self._cache = (None, None)
 
     def kb(self, view) -> KnowledgeBase:
-        if self._cache[0] is not view:           # one KB per TimeView (== per T)
+        live = getattr(view, "kb", None)          # sandbox: the worker keeps one KB, updated incrementally
+        if live is not None:
+            return live
+        if self._cache[0] is not view:           # rebuild mode: one KB per TimeView (== per T)
             self._cache = (view, KnowledgeBase(view))
         return self._cache[1]
 
@@ -26,6 +29,14 @@ class KBHeuristic(Predictor):
         return (1.0 * L(f["lines"]) + 0.5 * L(f["n_code_files"]) + 1.0 * L(f["file_fixes"])
                 + 0.3 * L(f["file_commits"]) - 0.3 * L(f["author_prior_commits"]))
 
+    @staticmethod
+    def tests_score(f: dict) -> float:
+        return L(f["lines"]) + L(f["file_fixes"])
+
+    @staticmethod
+    def needs_tests_candidate(f: dict) -> bool:
+        return not (f["touches_tests"] or f["docs_only"] or f["n_code_files"] == 0)
+
     def risky_commits(self, view, candidates):
         kb = self.kb(view)
         return [Flag(c["sha"], self.risk_score(kb.commit_features(c["sha"]))) for c in candidates]
@@ -34,9 +45,8 @@ class KBHeuristic(Predictor):
         kb, out = self.kb(view), []
         for c in candidates:
             f = kb.commit_features(c["sha"])
-            if f["touches_tests"] or f["docs_only"] or f["n_code_files"] == 0:
-                continue
-            out.append(Flag(c["sha"], L(f["lines"]) + L(f["file_fixes"])))
+            if self.needs_tests_candidate(f):
+                out.append(Flag(c["sha"], self.tests_score(f)))
         return out
 
     def similar_issues(self, view, issue, k):

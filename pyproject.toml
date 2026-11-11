@@ -1,11 +1,15 @@
 [project]
 name = "timemachine"
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.11"
 dependencies = []
+
+[project.optional-dependencies]
+llm = ["anthropic>=2.8"]       # only the host-side LLM gateway needs it; the sandbox never imports it
+dev = ["pytest"]
 
 [project.scripts]
 tm = "timemachine.cli:main"
 
 [tool.setuptools]
-packages = ["timemachine", "timemachine.kb"]
+packages = ["timemachine", "timemachine.kb", "timemachine.sandbox"]
