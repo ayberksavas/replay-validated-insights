@@ -16,6 +16,7 @@ import sys
 
 from ..store import SCHEMA
 from ..kb import KnowledgeBase
+from ..kb.code import CodeIndex
 from ..kb.events import COMMIT, ISSUE, ISSUE_EVENT, COMMENT
 from ..predictor import Flag, RandomBaseline, MostChangedFiles
 from ..heuristics import KBHeuristic
@@ -119,6 +120,7 @@ class Worker:
         self.store.executescript(SCHEMA)
         self.kb = KnowledgeBase()
         self.view = SandboxView(self.store_path, channel, self.kb)
+        self.view.code = CodeIndex(os.path.join(root, "code"))   # the code as of T, kept there by the host
         self.predictor = PREDICTORS[predictor](**(options or {}))
 
     def advance(self, as_of, events):
@@ -144,6 +146,15 @@ class Worker:
         self.view.as_of = as_of
         return {"as_of": as_of, "new_events": len(events), "kb": self.kb.summary()}
 
+    def change_task(self, ref):
+        """The host names a task only by kind + number; its words come from the sandbox's own store,
+        so the predictor can only read what was written before T."""
+        row = self.view.db.execute("SELECT * FROM issues WHERE number=?", (ref["number"],)).fetchone()
+        if row is None or bool(row["is_pr"]) != (ref["kind"] == "pr"):
+            raise LeakageError(f"task {ref['kind']} #{ref['number']} is not visible in the sandbox")
+        return {"kind": ref["kind"], "number": row["number"], "title": row["title"], "body": row["body"] or "",
+                "comments": [c["body"] for c in self.view.comments(row["number"])]}
+
     def _rows(self, shas):
         rows = []
         for s in shas:
@@ -167,8 +178,14 @@ class Worker:
             return self._out(self.predictor.missing_tests(self.view, self._rows(msg["candidates"])))
         if op == "similar":
             return self._out(self.predictor.similar_issues(self.view, msg["issue"], msg["k"]))
+        if op == "change":
+            k = msg["k"]
+            self.view.code.refresh()
+            out = self.predictor.predict_change(self.view, self.change_task(msg["task"]), k) or {}
+            return {"files": list(out.get("files") or [])[:k], "patch": out.get("patch"), "why": out.get("why", "")}
         if op == "stats":
-            return {"predictor": dict(getattr(self.predictor, "stats", {}) or {}), "kb": self.kb.summary()}
+            return {"predictor": dict(getattr(self.predictor, "stats", {}) or {}), "kb": self.kb.summary(),
+                    "code_files_reindexed": self.view.code.reindexed}
         if op == "probe":
             return self.probe(msg)
         raise ValueError(f"unknown op {op!r}")

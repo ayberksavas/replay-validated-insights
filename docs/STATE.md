@@ -11,7 +11,8 @@
 - **Claude predictor** (`insight.py`, `ClaudeInsight`), token-optimized: heuristic prefilter, one batched request per step for Outputs 1+2, compact packets (short ids, numbers from the KB, diffs cut to changed code lines), cached system prompts, BM25-gated issue reranking, host-side response cache and token budget (`llm.py`). With no API key it runs as a dry run and equals `kb_heuristic`.
 - Output 3 queries have "duplicate of #N" removed (the stored body is the latest edit and the oracle reads its answer from that text). `--keep-dup-markers` restores the old behaviour.
 - `tm demo`: live timeline + HTML report (results, token use, sandbox, leak probe, per-step flags).
-- Tests: 28 (incremental KB == rebuilt KB; sandbox store == TimeView at every T; incremental replay == rebuild replay for all baselines; leak probe; snapshot has no future objects; LLM gateway caching/budget/request shape with a fake client; GitHub ingest full + incremental with canned pages).
+- **Output 8, next code change** (`nextchange.py`, extension beyond PROJECT.pdf; see `docs/NEXT_CHANGE.md`): tasks mined from history (an issue a commit closed, or the PR it came from); at T = just before the commit each sandbox gets only the task number and the code as of T, predicts the files to change and (Claude) the patch; scored by hit@1/hit@3/recall@5/MRR and changed-line F1 against the real commit. `tm nextchange`.
+- Tests: 34 (incremental KB == rebuilt KB; sandbox store == TimeView at every T; incremental replay == rebuild replay for all baselines; leak probe; snapshot has no future objects; LLM gateway caching/budget/request shape with a fake client; GitHub ingest full + incremental with canned pages).
 
 ## Not done
 - **Live Claude run**: everything LLM-side is tested with a fake client only. Needs `ANTHROPIC_API_KEY`.

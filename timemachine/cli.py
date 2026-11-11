@@ -70,6 +70,13 @@ def main():
     dm.add_argument("--html", help="report path (default data/<slug>/demo_report.html)")
     dm.add_argument("--no-code-snapshot", action="store_true", help="do not keep a git snapshot of the code at T in the featured sandbox")
     dm.add_argument("--quiet", action="store_true", help="no per-step timeline")
+    nc = sub.add_parser("nextchange", help="Output 8: predict the next code change (files + patch) for issues/PRs, "
+                                          "scored against the real commit")
+    add_replay_args(nc, demo=True)
+    nc.add_argument("--kinds", default="issue", help="comma list: issue (issue a commit closed), pr (PR description)")
+    nc.add_argument("--limit", type=int, default=None, help="score at most this many tasks")
+    nc.add_argument("--top-k", type=int, default=10)
+    nc.add_argument("--quiet", action="store_true")
     s = sub.add_parser("snapshot", help="export the code as of T into a fresh repo (no future history)")
     s.add_argument("slug"); s.add_argument("--workdir", default="data")
     s.add_argument("--at", required=True); s.add_argument("--out", required=True)
@@ -94,8 +101,22 @@ def main():
         sha = export_snapshot(repo, parse_date(a.at), a.out, history=a.history)
         print(f"{a.out}: tree of {sha} (last commit at or before {a.at})")
         return
-    times = list(range(parse_date(a.start), parse_date(a.end), a.every_days * DAY))
     names = [n.strip() for n in a.predictors.split(",") if n.strip()]
+    if a.cmd == "nextchange":
+        from .nextchange import replay_next_change, Console as ChangeConsole
+        llm = make_llm(a, d, names)
+        con = ChangeConsole(featured=names[-1], quiet=a.quiet)
+        print(f"\n== NEXT CODE CHANGE ==  {a.slug}  {a.start} -> {a.end} | kinds: {a.kinds} | predictors: {', '.join(names)}"
+              + (f" | Claude: {llm.model}, {llm.mode}" if llm else ""))
+        res = replay_next_change(db, repo, names, parse_date(a.start), parse_date(a.end),
+                                 kinds=tuple(x.strip() for x in a.kinds.split(",")), k=a.top_k, limit=a.limit, llm=llm,
+                                 on_task=con.task, runtime=a.sandbox, image=a.docker_image)
+        con.footer(res)
+        if a.json_out:
+            with open(a.json_out, "w", encoding="utf-8") as f:
+                json.dump(res, f, indent=2, default=str)
+        return
+    times = list(range(parse_date(a.start), parse_date(a.end), a.every_days * DAY))
     redact = not a.keep_dup_markers
     if a.cmd == "replay" and a.mode == "rebuild":
         out = [replay(db, repo, IN_PROCESS[n](), times, window_days=a.window_days, lookback_days=a.lookback_days,

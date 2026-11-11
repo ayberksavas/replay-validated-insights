@@ -18,13 +18,14 @@ Token levers (each one is counted in `stats`):
    ahead), from titles and short excerpts.
 6. The host caches responses by request hash: re-running a replay costs zero tokens.
 """
+import difflib
 import json
 import math
 import re
 from collections import Counter
 
 from .heuristics import KBHeuristic
-from .predictor import Flag
+from .predictor import Flag, task_text
 
 COMMIT_SYSTEM = """You are a senior reviewer inside a software-quality assistant. You see commits that \
 landed in an open-source repository during the last few weeks, as compact evidence packets built from \
@@ -148,22 +149,142 @@ def compact_diff(diff: str, keep, max_lines=40, per_file=12, width=110) -> tuple
     return "\n".join(out), dropped
 
 
-def _parse(resp, key):
+def _parse(resp, key=None):
     text = (resp or {}).get("text")
     if not text:
         return None
     try:
-        return json.loads(text)[key]
+        data = json.loads(text)
+        return data if key is None else data[key]
     except (ValueError, KeyError, TypeError):
         return None
+
+
+LOCALIZE_SYSTEM = """You are a senior engineer planning a code change in an open-source repository. You get a \
+TASK, written before the change was made: an issue report (a bug or a request) or a pull-request \
+description, with the discussion so far. You also get a short list of candidate source files as they \
+are right now, each with its size and the main names it defines. You cannot see how the repository \
+looks later; decide from the task and the code only.
+
+Return the files the change will most likely MODIFY. For each file you pick:
+- id: the candidate id exactly as given (f1, f2, ...)
+- confidence (integer 0-100): how likely this file is modified by the change
+- where: the functions, classes, options or constants to change, at most 12 words
+
+How to decide:
+- The file that IMPLEMENTS the behaviour named in the task beats files that only call it, re-export it, \
+or document it. Wrappers around a command line usually keep each command's options in one module per \
+command: an option or flag request lands where that command's arguments are built.
+- When the task names a function, method, parameter, option, class or error message, the file that \
+defines it is the strongest candidate. Error messages and tracebacks name the failing function.
+- Most changes modify one source file, sometimes two or three. Pick at most three files and give the \
+rest no entry. Order your picks by confidence.
+- Packaging, configuration and test files are only picked when the task is clearly about them.
+- If no candidate fits well, still return your best guess with a low confidence.
+Return JSON only, matching the schema."""
+
+LOCALIZE_SCHEMA = {
+    "type": "object",
+    "properties": {"files": {"type": "array", "items": {
+        "type": "object",
+        "properties": {"id": {"type": "string"}, "confidence": {"type": "integer"}, "where": {"type": "string"}},
+        "required": ["id", "confidence", "where"], "additionalProperties": False}}},
+    "required": ["files"], "additionalProperties": False,
+}
+
+PATCH_SYSTEM = """You write the code change for a TASK in an open-source repository, as search-and-replace \
+edits on the files shown. The task (an issue report or a pull-request description, with the discussion so \
+far) was written before the change; the files are shown exactly as they are now, sometimes only the \
+relevant parts (a line with "..." marks code left out).
+
+Return:
+- edits: a list of edits. Each edit has
+  - file: the path exactly as shown after "===",
+  - find: an exact, contiguous snippet copied from that file, including its indentation, long enough to \
+occur exactly once in the file (usually 2 to 6 lines),
+  - replace: the new text for that snippet.
+- summary: one sentence saying what the change does.
+
+Rules:
+- Make the smallest change that does what the task asks. Keep the file's style, naming and indentation.
+- Do not reformat or reorder code you are not changing, and do not touch unrelated code.
+- To add new code, use an edit whose find is an existing nearby line and whose replace keeps that line \
+and adds the new code before or after it.
+- Never copy the "..." markers or the "===" headers into find or replace.
+- Each find must match the file as shown, character for character; an edit whose find does not match \
+exactly once is dropped.
+- Prefer changing the implementation over adding workarounds in callers. Add or adjust a parameter, a \
+default, a check or a branch where the behaviour is decided.
+Return JSON only, matching the schema."""
+
+PATCH_SCHEMA = {
+    "type": "object",
+    "properties": {"edits": {"type": "array", "items": {
+        "type": "object",
+        "properties": {"file": {"type": "string"}, "find": {"type": "string"}, "replace": {"type": "string"}},
+        "required": ["file", "find", "replace"], "additionalProperties": False}},
+        "summary": {"type": "string"}},
+    "required": ["edits", "summary"], "additionalProperties": False,
+}
+
+_IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]{2,}")
+
+
+def excerpt(text: str, where: str, max_lines: int = 300, window: int = 60) -> str:
+    """The whole file when it is short; otherwise the parts around the names Claude said it would change."""
+    lines = text.splitlines()
+    if len(lines) <= max_lines:
+        return text
+    names = set(_IDENT.findall(where or ""))
+    starts = [i for i, l in enumerate(lines) if any(re.match(rf"\s*(?:async\s+def|def|class)\s+{re.escape(n)}\b", l) for n in names)]
+    if not starts:
+        return "\n".join(lines[:max_lines]) + "\n..."
+    keep = set()
+    for s in starts:
+        keep.update(range(max(0, s - 5), min(len(lines), s + window)))
+    out, prev = [], -2
+    for i in sorted(keep)[:max_lines]:
+        if i != prev + 1:
+            out.append("...")
+        out.append(lines[i])
+        prev = i
+    return "\n".join(out) + ("\n..." if prev < len(lines) - 1 else "")
+
+
+def apply_edits(code, edits, allowed):
+    """Apply search/replace edits to copies of the files; returns (unified diff, applied, failed)."""
+    new, applied, failed = {}, 0, 0
+    for e in edits or []:
+        p = e.get("file")
+        if p not in allowed:
+            failed += 1
+            continue
+        cur = new[p] if p in new else code.read(p)
+        find = e.get("find") or ""
+        if find and cur.count(find) == 1:
+            new[p] = cur.replace(find, e.get("replace") or "", 1)
+            applied += 1
+        else:
+            new.setdefault(p, cur)
+            failed += 1
+    parts = []
+    for p, text in new.items():
+        old = code.read(p)
+        if text != old:
+            diff = difflib.unified_diff(old.splitlines(True), text.splitlines(True), f"a/{p}", f"b/{p}", n=0)
+            parts.extend(l if l.endswith("\n") else l + "\n" for l in diff)
+    return "".join(parts) or None, applied, failed
 
 
 class ClaudeInsight(KBHeuristic):
     name = "claude_insight"
 
     def __init__(self, prefilter=0.5, min_llm=3, max_llm=12, diff_lines=40, per_file=12, issue_pool=8,
-                 gate_ratio=2.0, effort="low", measure_naive=True):
+                 gate_ratio=2.0, effort="low", measure_naive=True, change_pool=8, patch_files=2, patch_lines=300,
+                 patch_effort="medium", write_patches=True):
         super().__init__()
+        self.change_pool, self.patch_files, self.patch_lines = change_pool, patch_files, patch_lines
+        self.patch_effort, self.write_patches = patch_effort, write_patches
         self.prefilter, self.min_llm, self.max_llm = prefilter, min_llm, max_llm
         self.diff_lines, self.per_file = diff_lines, per_file
         self.issue_pool, self.gate_ratio, self.effort = issue_pool, gate_ratio, effort
@@ -311,3 +432,56 @@ class ClaudeInsight(KBHeuristic):
         rest = sorted((n for n in pos if n not in explicit), key=lambda n: (-llm.get(n, -1), pos[n]))
         order = explicit + rest
         return [Flag(n, float(len(order) - i)) for i, n in enumerate(order[:k])]
+
+    # ---- Output 8: predict the next code change ----
+    def predict_change(self, view, task, k):
+        """1. KB heuristic shortlists files (BM25 over the code at T). 2. Claude picks the files from that
+        shortlist, seeing only paths, sizes and defined names (cheap). 3. Claude writes search/replace
+        edits for its top picks, seeing only those files (or the parts around the names it chose).
+        No LLM answer (dry run, budget, error) = the heuristic's ranking and no patch."""
+        base = super().predict_change(view, task, max(k, self.change_pool))["files"]
+        self.stats["change_tasks"] += 1
+        if not base:
+            return {"files": []}
+        text = task_text(task, 2500)
+        ids = {f"f{i + 1}": p for i, p in enumerate(base[:self.change_pool])}
+        lines = []
+        for cid, p in ids.items():
+            body = view.code.read(p)
+            lines.append(f"{cid} {p} ({body.count(chr(10)) + 1} lines): {', '.join(view.code.outline(p)) or '-'}")
+        user = f"TASK ({task['kind']} #{task['number']}):\n{text}\n\nCANDIDATE FILES:\n" + "\n".join(lines)
+        if self.measure_naive:   # naive: the task plus every shortlisted file in full, one big request
+            self.stats["change_naive_chars"] += len(PATCH_SYSTEM) + len(text) + sum(len(view.code.read(p)) for p in ids.values())
+        self.stats["requests"] += 1
+        self.stats["change_prompt_chars"] += len(LOCALIZE_SYSTEM) + len(user)
+        self.stats["system_chars"] += len(LOCALIZE_SYSTEM)
+        rows = _parse(view.llm(system=LOCALIZE_SYSTEM, user=user, schema=LOCALIZE_SCHEMA, effort=self.effort,
+                               max_tokens=2000, tag="localize"), "files")
+        if rows is None:
+            self.stats["fallback_requests"] += 1
+            if self.write_patches:   # what the patch request would have cost, had Claude picked the heuristic's top files
+                self.stats["patch_est_chars"] += len(PATCH_SYSTEM) + len(text) + sum(
+                    len(excerpt(view.code.read(p), "", self.patch_lines)) + 12 for p in base[:self.patch_files])
+            return {"files": base[:k]}
+        picks = sorted((r for r in rows if str(r.get("id")) in ids), key=lambda r: -int(r.get("confidence", 0)))
+        chosen = [ids[str(r["id"])] for r in picks]
+        where = {ids[str(r["id"])]: str(r.get("where", "")) for r in picks}
+        ranked = list(dict.fromkeys(chosen + base))[:k]
+        to_edit = chosen[:self.patch_files]
+        if not self.write_patches or not to_edit:
+            return {"files": ranked, "why": "; ".join(f"{p}: {where[p]}" for p in to_edit)}
+        blocks = [f"=== {p} ===\n{excerpt(view.code.read(p), where.get(p, ''), self.patch_lines)}" for p in to_edit]
+        user2 = f"TASK ({task['kind']} #{task['number']}):\n{text}\n\nFILES:\n" + "\n\n".join(blocks)
+        self.stats["requests"] += 1
+        self.stats["change_prompt_chars"] += len(PATCH_SYSTEM) + len(user2)
+        self.stats["system_chars"] += len(PATCH_SYSTEM)
+        data = _parse(view.llm(system=PATCH_SYSTEM, user=user2, schema=PATCH_SCHEMA, effort=self.patch_effort,
+                               max_tokens=8000, tag="patch"))
+        if not data:
+            self.stats["fallback_requests"] += 1
+            return {"files": ranked}
+        patch, ok, bad = apply_edits(view.code, data.get("edits"), set(to_edit))
+        self.stats["edits_applied"] += ok
+        self.stats["edits_failed"] += bad
+        self.stats["patches"] += bool(patch)
+        return {"files": ranked, "patch": patch, "why": clip(data.get("summary", ""), 160)}

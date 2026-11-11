@@ -17,6 +17,17 @@ class Predictor:
     def risky_commits(self, view, candidates) -> list[Flag]: return []
     def missing_tests(self, view, candidates) -> list[Flag]: return []
     def similar_issues(self, view, issue, k) -> list[Flag]: return []
+    # Output 8 (next code change): task = {kind: issue|pr, number, title, body, comments}, all visible at T.
+    # Return {"files": ranked code paths the change will touch, "patch": unified diff or None, "why": str}.
+    # The code as of T is in view.code (kb/code.py: files(), read(), outline(), search()).
+    def predict_change(self, view, task, k) -> dict: return {"files": []}
+
+
+def task_text(task: dict, max_chars: int = 4000) -> str:
+    """The words of a change task: title, description, then the discussion so far (all written before T)."""
+    parts = [task.get("title") or "", task.get("body") or ""] + [c for c in task.get("comments") or [] if c]
+    text = "\n\n".join(p.strip() for p in parts if p and p.strip())
+    return text[:max_chars]
 
 
 class RandomBaseline(Predictor):
@@ -29,6 +40,9 @@ class RandomBaseline(Predictor):
     def similar_issues(self, view, issue, k):
         pool = [i["number"] for i in view.issues(is_pr=False) if i["number"] != issue["number"]]
         return [Flag(n, self.r.random()) for n in self.r.sample(pool, min(k, len(pool)))]
+    def predict_change(self, view, task, k):
+        files = view.code.files()
+        return {"files": self.r.sample(files, min(k, len(files)))}
 
 
 class MostChangedFiles(Predictor):
@@ -56,3 +70,7 @@ class MostChangedFiles(Predictor):
         q = tok(issue["title"] + " " + (issue["body"] or ""))
         sc = [(len(q & tok(i["title"])) / (1 + len(q)), i["number"]) for i in view.issues(is_pr=False) if i["number"] != issue["number"]]
         return [Flag(n, s) for s, n in sorted(sc, reverse=True)[:k]]
+
+    def predict_change(self, view, task, k):   # the files changed most often so far, whatever the task says
+        ch = self._churn(view)
+        return {"files": sorted(view.code.files(), key=lambda p: (-ch.get(p, 0), p))[:k]}
