@@ -51,8 +51,19 @@ Effort `low` for localization, `medium` for the patch. Without an API key Claude
 | recall@5 | 0.167 | 0.349 | 0.659 |
 | MRR | 0.138 | 0.251 | 0.606 |
 
-Estimated live cost for these 61 tasks: about 393k prompt tokens in 122 requests (vs about 2.4M if each
-shortlist were sent in full), roughly $2.4-5.5 on Claude Opus 5.5 depending on output length.
+`--kinds pr` (every main-line commit with a linked PR or issue, described by its PR; 397 mined, 2 skipped
+because the snapshot at T was not an ancestor of the commit):
+
+| 395 PR tasks | random | most_changed_files | kb_heuristic |
+| --- | --- | --- | --- |
+| hit@1 | 0.033 | 0.109 | 0.435 |
+| hit@3 | 0.104 | 0.342 | 0.691 |
+| recall@5 | 0.100 | 0.363 | 0.636 |
+| MRR | 0.088 | 0.268 | 0.580 |
+
+Estimated live cost (4 chars/token): 61 issue tasks about 393k prompt tokens in 122 requests (vs about
+2.4M if each shortlist were sent in full), roughly $2.4-5.5 on Claude Opus 5.5 depending on output
+length; 395 PR tasks about 2.1M prompt tokens (vs 13.3M naive), so use `--limit` or `--token-budget`.
 Patch quality (line F1) needs a live run.
 
 ## Not done
