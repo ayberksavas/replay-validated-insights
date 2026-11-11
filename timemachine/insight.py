@@ -462,7 +462,7 @@ class ClaudeInsight(KBHeuristic):
             if self.write_patches:   # what the patch request would have cost, had Claude picked the heuristic's top files
                 self.stats["patch_est_chars"] += len(PATCH_SYSTEM) + len(text) + sum(
                     len(excerpt(view.code.read(p), "", self.patch_lines)) + 12 for p in base[:self.patch_files])
-            return {"files": base[:k]}
+            return {"files": base[:k], "preview": user[:1800]}   # the request Claude would have received
         picks = sorted((r for r in rows if str(r.get("id")) in ids), key=lambda r: -int(r.get("confidence", 0)))
         chosen = [ids[str(r["id"])] for r in picks]
         where = {ids[str(r["id"])]: str(r.get("where", "")) for r in picks}

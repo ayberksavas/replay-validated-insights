@@ -182,7 +182,8 @@ class Worker:
             k = msg["k"]
             self.view.code.refresh()
             out = self.predictor.predict_change(self.view, self.change_task(msg["task"]), k) or {}
-            return {"files": list(out.get("files") or [])[:k], "patch": out.get("patch"), "why": out.get("why", "")}
+            return {"files": list(out.get("files") or [])[:k], "patch": out.get("patch"), "why": out.get("why", ""),
+                    "preview": (out.get("preview") or "")[:2000] or None}
         if op == "stats":
             return {"predictor": dict(getattr(self.predictor, "stats", {}) or {}), "kb": self.kb.summary(),
                     "code_files_reindexed": self.view.code.reindexed}

@@ -173,11 +173,31 @@ def replay_next_change(db_path, repo, predictors, start, end, kinds=("issue",), 
 class Console:
     """Live lines for `tm nextchange`: one task per line, the featured predictor's top files vs the truth."""
 
-    def __init__(self, featured, quiet=False):
+    def __init__(self, featured, quiet=False, db_path=None, repo=None):
         self.featured, self.quiet, self.n = featured, quiet, 0
+        self.db, self.repo, self.records = (connect(db_path) if db_path else None), repo, []
+
+    def record(self, t, preds, scores, snap):
+        """Everything the HTML report shows for one task (host side: it may read the real commit)."""
+        from .insight import compact_diff
+        body = ""
+        if self.db is not None:
+            row = self.db.execute("SELECT body FROM issues WHERE number=?", (t["number"],)).fetchone()
+            body = (row[0] or "") if row else ""
+        real = ""
+        if self.repo:
+            real, _ = compact_diff(run_git(self.repo, "show", "--format=", "-U0", "--no-color", t["sha"]),
+                                   keep=lambda p: p in set(t["target"]), max_lines=16, per_file=8)
+        self.records.append({"task": {k: t[k] for k in ("id", "kind", "number", "sha", "ts", "subject", "title", "target")},
+                             "body": body[:600], "real_diff": real, "snapshot": snap,
+                             "preds": {n: {"files": p.get("files", [])[:5], "why": p.get("why", ""),
+                                           "patch": (p.get("patch") or "")[:3000], "preview": p.get("preview")}
+                                       for n, p in preds.items()},
+                             "scores": scores})
 
     def task(self, t, preds, scores, snap):
         self.n += 1
+        self.record(t, preds, scores, snap)
         if self.quiet:
             return
         p, s = preds[self.featured], scores[self.featured]

@@ -77,6 +77,7 @@ def main():
     nc.add_argument("--limit", type=int, default=None, help="score at most this many tasks")
     nc.add_argument("--top-k", type=int, default=10)
     nc.add_argument("--quiet", action="store_true")
+    nc.add_argument("--html", help="report path (default data/<slug>/nextchange_report.html)")
     s = sub.add_parser("snapshot", help="export the code as of T into a fresh repo (no future history)")
     s.add_argument("slug"); s.add_argument("--workdir", default="data")
     s.add_argument("--at", required=True); s.add_argument("--out", required=True)
@@ -105,16 +106,21 @@ def main():
     if a.cmd == "nextchange":
         from .nextchange import replay_next_change, Console as ChangeConsole
         llm = make_llm(a, d, names)
-        con = ChangeConsole(featured=names[-1], quiet=a.quiet)
+        con = ChangeConsole(featured=names[-1], quiet=a.quiet, db_path=db, repo=repo)
         print(f"\n== NEXT CODE CHANGE ==  {a.slug}  {a.start} -> {a.end} | kinds: {a.kinds} | predictors: {', '.join(names)}"
               + (f" | Claude: {llm.model}, {llm.mode}" if llm else ""))
         res = replay_next_change(db, repo, names, parse_date(a.start), parse_date(a.end),
                                  kinds=tuple(x.strip() for x in a.kinds.split(",")), k=a.top_k, limit=a.limit, llm=llm,
                                  on_task=con.task, runtime=a.sandbox, image=a.docker_image)
         con.footer(res)
+        from .report import render_nextchange_html
+        html_path = a.html or os.path.join(d, "nextchange_report.html")
+        with open(html_path, "w", encoding="utf-8") as f:
+            f.write(render_nextchange_html(res, con.records, a.slug, vars(a), featured=names[-1]))
+        print(f"\nreport: {os.path.abspath(html_path)}")
         if a.json_out:
             with open(a.json_out, "w", encoding="utf-8") as f:
-                json.dump(res, f, indent=2, default=str)
+                json.dump({**res, "tasks": con.records}, f, indent=2, default=str)
         return
     times = list(range(parse_date(a.start), parse_date(a.end), a.every_days * DAY))
     redact = not a.keep_dup_markers

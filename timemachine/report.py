@@ -241,3 +241,103 @@ def render_html(res, slug, args, subjects):
         out.append(f"<details{' open' if hits else ''}><summary>{head} &middot; {hits} flagged were buggy</summary><table>{''.join(items)}</table></details>")
     out.append("</main></body></html>")
     return "\n".join(out)
+
+
+NC_CSS = """pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto;
+font:12.5px/1.45 ui-monospace,Consolas,monospace;white-space:pre}.add{color:var(--hit)}.del{color:#b4443a}
+.task h3{font-size:14px;margin:14px 0 6px}.ok{color:var(--hit);font-weight:600}.no{color:var(--muted)}"""
+
+
+def _diff_html(text):
+    e = html.escape
+    rows = []
+    for line in (text or "").splitlines():
+        cls = "add" if line.startswith("+") else ("del" if line.startswith("-") else "")
+        rows.append(f"<span class={cls}>{e(line)}</span>" if cls else e(line))
+    return "\n".join(rows)
+
+
+def render_nextchange_html(res, records, slug, args, featured):
+    """Report for `tm nextchange`: the scores, then every task with what was asked, what really changed,
+    and what each predictor guessed."""
+    from .nextchange import METRICS, day as nday
+    e = html.escape
+    rs, run = res["results"], res["run"]
+    names = [r["predictor"] for r in rs]
+    kinds = [k for k in ("issue", "pr") if any(k in r for r in rs)]
+    key = "all" if len(kinds) > 1 else (kinds[0] if kinds else "all")
+    by = {r["predictor"]: r.get(key, {}) for r in rs}
+    pct = lambda v: "n/a" if v is None else f"{100 * v:.0f}%"
+    out = [f"<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>"
+           f"<title>Next Change Replay</title><style>{CSS}{NC_CSS}</style></head><body><main>",
+           f"<h1>Next code change: {e(slug)}</h1><div class=sub>Each task is a real commit and the {' or '.join(kinds)} that asked for it. "
+           f"One second before the commit, every predictor got only the task number and the code as it was then, inside its own "
+           f"sandbox, and predicted which files the change would touch. {e(args['start'])} to {e(args['end'])}.</div>"]
+    best = by.get("kb_heuristic") or by.get(featured) or {}
+    rnd = by.get("random") or {}
+    cards = [(f"{run['tasks_scored']}", "real changes replayed"),
+             (pct(best.get("hit@1")), "first guess was a file the developers changed (KB heuristic)"),
+             (pct(best.get("hit@3")), "right file in the top 3 (KB heuristic)"),
+             (pct(rnd.get("hit@1")), "first guess right when picking at random")]
+    out.append("<div class=grid style='margin-top:18px'>" + "".join(
+        f"<div class=card><div class=big>{e(a)}</div><div class=lbl>{e(b)}</div></div>" for a, b in cards) + "</div>")
+    out.append(f"<h2>Results ({e(key)} tasks)</h2><div class=wrap><table><tr><th>Metric</th>"
+               + "".join(f"<th class=n>{e(n)}</th>" for n in names) + "</tr>")
+    labels = {"hit@1": "first guess right (hit@1)", "hit@3": "right file in top 3 (hit@3)",
+              "recall@5": "share of changed files in top 5", "mrr": "mean reciprocal rank", "line_f1": "patch: changed-line F1"}
+    for m in METRICS + ("line_f1",):
+        vals = [by[n].get(m) for n in names]
+        if all(v is None for v in vals):
+            continue
+        top = max((v for v in vals if v is not None), default=None)
+        out.append(f"<tr><td>{e(labels[m])}</td>" + "".join(
+            f"<td class='n{' best' if v is not None and v == top and top > 0 else ''}'>{fmt(v)}</td>" for v in vals) + "</tr>")
+    out.append("</table></div>")
+    st = next((r["sandbox"]["predictor_stats"] for r in rs if r["predictor"] == "claude_insight"), None)
+    llm = run.get("llm") or {}
+    if st:
+        est = (st.get("change_prompt_chars", 0) + st.get("patch_est_chars", 0)) // 4
+        naive = st.get("change_naive_chars", 0) // 4
+        mode = llm.get("mode", "dry-run")
+        note = ("Claude was not called (no API key): claude_insight used the KB heuristic's ranking, so its scores equal it. "
+                "Each task below shows the compact request Claude would have received." if mode == "dry-run" else
+                f"Claude ({e(llm.get('model', ''))}) was called live.")
+        out.append(f"<p class=lbl>{note} Prompt size for all tasks: ~{est:,} tokens (localization + patch requests) "
+                   f"versus ~{naive:,} for sending each shortlist in full (estimates, 4 characters per token).</p>")
+    out.append(f"<h2>Tasks</h2><p class=lbl>Result marks are for {e(featured)}. Tasks are in time order.</p>")
+    shown_open = 0
+    for i, rec in enumerate(records, 1):
+        t, sc = rec["task"], rec["scores"].get(featured, {})
+        mark = ("<span class=hit>first guess right</span>" if sc.get("hit@1") else
+                "<span class=hit>in top 3</span>" if sc.get("hit@3") else "<span class=miss>missed</span>")
+        is_open = sc.get("hit@1") and shown_open < 4
+        shown_open += bool(is_open)
+        target = set(t["target"])
+        rows = []
+        for n in names:
+            p = rec["preds"].get(n, {})
+            cells = "<br>".join(f"<span class={'ok' if f in target else 'no'}>{'&#10003; ' if f in target else ''}{e(f)}</span>"
+                                for f in p.get("files", [])[:3]) or "<span class=no>-</span>"
+            s = rec["scores"].get(n, {})
+            res_txt = "first guess" if s.get("hit@1") else ("top 3" if s.get("hit@3") else "miss")
+            rows.append(f"<tr><td>{e(n)}</td><td>{cells}</td><td>{res_txt}</td></tr>")
+        fp = rec["preds"].get(featured, {})
+        extra = ""
+        if fp.get("why"):
+            extra += f"<h3>Claude's reasoning</h3><p>{e(fp['why'])}</p>"
+        if fp.get("patch"):
+            extra += f"<h3>Claude's patch</h3><pre>{_diff_html(fp['patch'])}</pre>"
+        prev = next((p.get("preview") for p in rec["preds"].values() if p.get("preview")), None)
+        if prev:
+            extra += (f"<details><summary>What Claude would receive (~{len(prev) // 4:,} tokens; the code itself is not sent "
+                      f"at this step)</summary><pre>{e(prev)}</pre></details>")
+        out.append(
+            f"<details class=task{' open' if is_open else ''}><summary>{i}. {nday(t['ts'])} &middot; {e(t['kind'])} #{t['number']}: "
+            f"{e(t['title'][:90])} &middot; {mark}</summary>"
+            f"<h3>What was asked (written before the change)</h3><p>{e(rec['body'][:500]) or '<span class=no>(no description)</span>'}</p>"
+            f"<h3>What the developers changed: <code>{e(t['id'])}</code> {e(t['subject'])}</h3>"
+            f"<pre>{_diff_html(rec['real_diff'])}</pre>"
+            f"<h3>What each predictor guessed (top 3, &#10003; = a file that really changed)</h3>"
+            f"<table><tr><th>Predictor</th><th>Files</th><th>Result</th></tr>{''.join(rows)}</table>{extra}</details>")
+    out.append("</main></body></html>")
+    return "\n".join(out)
