@@ -1,0 +1,5974 @@
+{
+  "results": [
+    {
+      "predictor": "kb_heuristic",
+      "output1_risky_change": {
+        "precision": 0.582,
+        "recall": 0.727,
+        "f1": 0.605,
+        "positives": 14,
+        "replay_points": 11,
+        "median_lead_days": 26.8
+      },
+      "output2_missing_tests": {
+        "precision": 0.672,
+        "recall": 0.498,
+        "f1": 0.54,
+        "positives": 108,
+        "replay_points": 36
+      },
+      "output3_similar_issue_hit@k": {
+        "hit_rate": 0.667,
+        "n_dup_issues": 3,
+        "replay_points": 3
+      },
+      "sandbox": {
+        "pid": 2171,
+        "dir": "/var/folders/hh/9wvv0nj16gvchcc8pz47smqm0000gn/T/tm_sandbox_kb_heuristic_vgxsjgjs",
+        "runtime": "process",
+        "container": null,
+        "events_received": 6724,
+        "steps": 152,
+        "host_requests": {},
+        "kb": {
+          "as_of": 1793318400,
+          "events": 6724,
+          "commits": 667,
+          "files": 121,
+          "issues": 303,
+          "prs": 145,
+          "fixes": 80,
+          "bug_issues": 34
+        },
+        "predictor_stats": {}
+      }
+    },
+    {
+      "predictor": "claude_insight",
+      "output1_risky_change": {
+        "precision": 0.567,
+        "recall": 0.727,
+        "f1": 0.587,
+        "positives": 14,
+        "replay_points": 11,
+        "median_lead_days": 26.8
+      },
+      "output2_missing_tests": {
+        "precision": 0.677,
+        "recall": 0.526,
+        "f1": 0.562,
+        "positives": 108,
+        "replay_points": 36
+      },
+      "output3_similar_issue_hit@k": {
+        "hit_rate": 0.667,
+        "n_dup_issues": 3,
+        "replay_points": 3
+      },
+      "sandbox": {
+        "pid": 2175,
+        "dir": "/var/folders/hh/9wvv0nj16gvchcc8pz47smqm0000gn/T/tm_sandbox_claude_insight_cez8mzir",
+        "runtime": "process",
+        "container": null,
+        "events_received": 6724,
+        "steps": 152,
+        "host_requests": {
+          "git_diff": 505,
+          "llm_requests": 64,
+          "notes_written": 54
+        },
+        "kb": {
+          "as_of": 1793318400,
+          "events": 6724,
+          "commits": 667,
+          "files": 121,
+          "issues": 303,
+          "prs": 145,
+          "fixes": 80,
+          "bug_issues": 34
+        },
+        "predictor_stats": {
+          "commits_seen": 505,
+          "commits_sent": 314,
+          "diff_chars_raw": 5110120,
+          "diff_chars_naive": 2777516,
+          "naive_chars": 4133704,
+          "naive_requests": 508,
+          "diff_chars_sent": 186469,
+          "requests": 64,
+          "prompt_chars": 451682,
+          "system_chars": 165280,
+          "llm_scored": 314,
+          "issue_queries": 3,
+          "issue_llm": 3,
+          "notes_used": 154,
+          "notes_requests": 42,
+          "notes_chars": 25409
+        }
+      }
+    }
+  ],
+  "run": {
+    "checkpoints": 152,
+    "replay_points": 145,
+    "issue_queries": 7,
+    "events_total": 6724,
+    "events_fed_once": 6724,
+    "rows_a_rebuild_would_copy": 543721,
+    "wall_seconds": 77.8,
+    "llm": {
+      "model": "claude-haiku-5-5",
+      "mode": "live",
+      "calls": {
+        "requests": 64,
+        "requests_commits": 61,
+        "response_cache_hits": 23,
+        "requests_issues": 3,
+        "api_calls": 41
+      },
+      "usage": {
+        "input_tokens": 99120,
+        "output_tokens": 10236,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 48459
+      },
+      "tokens_spent": 157815,
+      "cost_usd": 0.01551459,
+      "budget": 300000,
+      "errors": []
+    },
+    "probe": null,
+    "runtime": "process",
+    "container_check": null
+  },
+  "steps": [
+    {
+      "T": 1420070400,
+      "candidates": 4,
+      "events": 399,
+      "kb": {
+        "as_of": 1420070400,
+        "events": 399,
+        "commits": 166,
+        "files": 30,
+        "issues": 25,
+        "prs": 5,
+        "fixes": 8,
+        "bug_issues": 2
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "9aa8e7d53fb1c7b9df058d9323d626448b69fc32",
+              "score": 4.126,
+              "why": "",
+              "bug_fixed_at": 1421767508
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "9aa8e7d53fb1c7b9df058d9323d626448b69fc32",
+              "score": 1.421,
+              "why": "New event handler with player-state branch; tests touched but event path is fragile",
+              "bug_fixed_at": 1421767508
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 1,
+      "positives_tests": 3
+    },
+    {
+      "T": 1422662400,
+      "candidates": 47,
+      "events": 203,
+      "kb": {
+        "as_of": 1422662400,
+        "events": 602,
+        "commits": 213,
+        "files": 34,
+        "issues": 28,
+        "prs": 13,
+        "fixes": 12,
+        "bug_issues": 5
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "71582ad7a0c65c758c8e26589ff0b6577d156604",
+              "score": 6.892,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "e43b3c5bba9a91ee852cf5cf6db135a95970cf2a",
+              "score": 5.777,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "563308d596ec5561faee4055e61f2d854f519a4d",
+              "score": 5.526,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "42f11d400d520fc13ef98fd7df7f0c527c3fbe7a",
+              "score": 5.526,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "a94e7df25fb15ce02ef6805cf2a276520cd535e0",
+              "score": 5.189,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "798ddd3ad57e67a91c82c4a650bd9152e28d6efc",
+              "score": 5.12,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "6ef6aea8a598ee100ea728e3899177a8b454c459",
+              "score": 4.924,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "bcdecb45b4d2d8d00cbffccd7fc86257be9e11d1",
+              "score": 4.753,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "c337e52e7c73f078a0aeb59aeb7a7c9b983a94dc",
+              "score": 4.621,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "71582ad7a0c65c758c8e26589ff0b6577d156604",
+              "why": "",
+              "covered_at": 1427151783
+            },
+            {
+              "sha": "a94e7df25fb15ce02ef6805cf2a276520cd535e0",
+              "why": "",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "052d7d6bbbff94a6f2edbb6b4b15703c703674e2",
+              "why": "",
+              "covered_at": 1427151783
+            },
+            {
+              "sha": "32c8878351706d706bb6a33d526a8b2ff0faf88d",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "0b698a20f14687f29681c2b694d2d4035081c278",
+              "why": "",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "b314b77cb57f4afe12ebaf4a2761e4b59ecf61b2",
+              "why": "",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "2314305be8ee82c9856cea2a121ff7ef1287f805",
+              "why": "",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "de76d27bde33d0aed6be029c680ee9f92ed975fd",
+              "why": "",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "f5527a712fc51dcb7a70f5f5394a3a4830bfd6f0",
+              "why": "",
+              "covered_at": 1427151783
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "547153cc96cce3bf316f433bbd35e9c3174de575",
+              "score": 1.651,
+              "why": "Threading and actor callback rewiring in backend",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "bcdecb45b4d2d8d00cbffccd7fc86257be9e11d1",
+              "score": 1.601,
+              "why": "Changes config default meaning; blank list semantics shift",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "798ddd3ad57e67a91c82c4a650bd9152e28d6efc",
+              "score": 1.551,
+              "why": "Rewrites lookup dispatch and offline error handling",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "56923fe0f363530e7a955298afbf7bfc8c12e0a6",
+              "score": 1.501,
+              "why": "Symptom-level fix reworking recently added country toplists",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "71582ad7a0c65c758c8e26589ff0b6577d156604",
+              "score": 1.451,
+              "why": "Refactor moving helpers across modules; some loading logic changed",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "b314b77cb57f4afe12ebaf4a2761e4b59ecf61b2",
+              "score": 1.451,
+              "why": "Changes batching of album browsers; no tests",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "563308d596ec5561faee4055e61f2d854f519a4d",
+              "score": 1.421,
+              "why": "New country toplist logic with config-driven directories",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "e43b3c5bba9a91ee852cf5cf6db135a95970cf2a",
+              "score": 1.401,
+              "why": "Reorders toplist config and changes browse directory structure",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "42f11d400d520fc13ef98fd7df7f0c527c3fbe7a",
+              "score": 1.381,
+              "why": "Generalizes toplist handling into lookup tables",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "b314b77cb57f4afe12ebaf4a2761e4b59ecf61b2",
+              "why": "Changes batching of album browsers; no tests",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "0b698a20f14687f29681c2b694d2d4035081c278",
+              "why": "Reorders browser loading without test coverage",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "71582ad7a0c65c758c8e26589ff0b6577d156604",
+              "why": "Refactor moving helpers across modules; some loading logic changed",
+              "covered_at": 1427151783
+            },
+            {
+              "sha": "32c8878351706d706bb6a33d526a8b2ff0faf88d",
+              "why": "Data list update; config values changed",
+              "covered_at": null
+            },
+            {
+              "sha": "de76d27bde33d0aed6be029c680ee9f92ed975fd",
+              "why": "Logging additions only",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "052d7d6bbbff94a6f2edbb6b4b15703c703674e2",
+              "why": "Removes TODO comments only",
+              "covered_at": 1427151783
+            },
+            {
+              "sha": "2314305be8ee82c9856cea2a121ff7ef1287f805",
+              "why": "Debug timing only, low impact",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "a94e7df25fb15ce02ef6805cf2a276520cd535e0",
+              "why": "Parameter rename with no logic change",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "f5527a712fc51dcb7a70f5f5394a3a4830bfd6f0",
+              "why": "Log level change only",
+              "covered_at": 1427151783
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 11
+    },
+    {
+      "T": 1425254400,
+      "candidates": 5,
+      "events": 23,
+      "kb": {
+        "as_of": 1425254400,
+        "events": 625,
+        "commits": 218,
+        "files": 35,
+        "issues": 30,
+        "prs": 13,
+        "fixes": 12,
+        "bug_issues": 5
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "13fbcf0cbb75e8d080fcb88cc9d29ddb8acdbb99",
+              "score": 5.879,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "be28c39b992dd986ae1a6fbcaccbd58ffc8fc394",
+              "why": "",
+              "covered_at": 1427152321
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "be28c39b992dd986ae1a6fbcaccbd58ffc8fc394",
+              "score": 1.72,
+              "why": "Substantial playlists rewrite with new helpers, no tests, and file has prior bug fixes",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "1f0a41eac25b460c77d5930f237dcf728fec9ae2",
+              "why": "Shared actor proxy reused across objects; no tests, concurrency-sensitive lifecycle",
+              "covered_at": 1427014267
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 3
+    },
+    {
+      "T": 1427846400,
+      "candidates": 26,
+      "events": 77,
+      "kb": {
+        "as_of": 1427846400,
+        "events": 702,
+        "commits": 244,
+        "files": 36,
+        "issues": 34,
+        "prs": 15,
+        "fixes": 14,
+        "bug_issues": 8
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "74ac793d29ae34cfefe23de653a76a6393f36e51",
+              "score": 7.499,
+              "why": "",
+              "bug_fixed_at": 1430165584
+            },
+            {
+              "sha": "cdce249f8a5dba5815dab466b2681c82f4ea8c4a",
+              "score": 4.67,
+              "why": "",
+              "bug_fixed_at": 1430157744
+            },
+            {
+              "sha": "2ffe5ac80923dcc8b5106a16d151ace610d2d524",
+              "score": 4.117,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "d391c6729362d63508e1cafb362960ea71e7fd0a",
+              "score": 3.979,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "4d9a52fffbf90c5b1e4b7e6f5aa56c4871800c06",
+              "score": 3.879,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "74ac793d29ae34cfefe23de653a76a6393f36e51",
+              "why": "",
+              "covered_at": 1430164867
+            },
+            {
+              "sha": "d391c6729362d63508e1cafb362960ea71e7fd0a",
+              "why": "",
+              "covered_at": 1430165584
+            },
+            {
+              "sha": "2ffe5ac80923dcc8b5106a16d151ace610d2d524",
+              "why": "",
+              "covered_at": 1430165584
+            },
+            {
+              "sha": "a30185b8248fff9064fa46dc803c471421a9a09b",
+              "why": "",
+              "covered_at": 1430165584
+            },
+            {
+              "sha": "0f452141a51c3ea55819c43630485d697b6d4dff",
+              "why": "",
+              "covered_at": 1430687152
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "74ac793d29ae34cfefe23de653a76a6393f36e51",
+              "score": 1.721,
+              "why": "New image module, no tests, author new, uses urllib2 network logic",
+              "bug_fixed_at": 1430165584
+            },
+            {
+              "sha": "2dde77dfb7f9e5585b00cf2d2b0815c20cff6a6f",
+              "score": 1.601,
+              "why": "Emits None data as end-of-stream replacement; behaviour change untested",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "b92ca7bbc21053dace3b698a57b9dd6ce0a99d0f",
+              "score": 1.581,
+              "why": "Same emit_data(None) change in session manager, untested",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "d391c6729362d63508e1cafb362960ea71e7fd0a",
+              "score": 1.551,
+              "why": "Replaces playlists property with map and new as_list; shared state changed",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "498100054550a7faf38e96d1a42a554ca6593eb9",
+              "score": 1.501,
+              "why": "Rewrites playlist refs logic, drops utils; tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "74ac793d29ae34cfefe23de653a76a6393f36e51",
+              "why": "New image module, no tests, author new, uses urllib2 network logic",
+              "covered_at": 1430164867
+            },
+            {
+              "sha": "0f452141a51c3ea55819c43630485d697b6d4dff",
+              "why": "Reintroduces old playlists property behaviour without tests",
+              "covered_at": 1430687152
+            },
+            {
+              "sha": "2dde77dfb7f9e5585b00cf2d2b0815c20cff6a6f",
+              "why": "Emits None data as end-of-stream replacement; behaviour change untested",
+              "covered_at": null
+            },
+            {
+              "sha": "b92ca7bbc21053dace3b698a57b9dd6ce0a99d0f",
+              "why": "Same emit_data(None) change in session manager, untested",
+              "covered_at": 1430165584
+            },
+            {
+              "sha": "d391c6729362d63508e1cafb362960ea71e7fd0a",
+              "why": "Replaces playlists property with map and new as_list; shared state changed",
+              "covered_at": 1430165584
+            }
+          ]
+        }
+      },
+      "positives_risky": 2,
+      "positives_tests": 12
+    },
+    {
+      "T": 1430438400,
+      "candidates": 6,
+      "events": 41,
+      "kb": {
+        "as_of": 1430438400,
+        "events": 743,
+        "commits": 250,
+        "files": 37,
+        "issues": 38,
+        "prs": 15,
+        "fixes": 18,
+        "bug_issues": 11
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "227ea9c047f60718781d7ff762b0874fc81fbc21",
+              "score": 7.759,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "227ea9c047f60718781d7ff762b0874fc81fbc21",
+              "why": "",
+              "covered_at": 1431124898
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "227ea9c047f60718781d7ff762b0874fc81fbc21",
+              "score": 1.781,
+              "why": "New image-fetching module with network I/O and no tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "227ea9c047f60718781d7ff762b0874fc81fbc21",
+              "why": "New image-fetching module with network I/O and no tests touched",
+              "covered_at": 1431124898
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 4
+    },
+    {
+      "T": 1433030400,
+      "candidates": 12,
+      "events": 21,
+      "kb": {
+        "as_of": 1433030400,
+        "events": 801,
+        "commits": 262,
+        "files": 37,
+        "issues": 41,
+        "prs": 15,
+        "fixes": 19,
+        "bug_issues": 11
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "87ff75a2c4e4c33624015e9cadb7b50bbbae9a6d",
+              "score": 5.522,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "8e7e9b492cd90c1bb4079611850d881078741eb0",
+              "score": 3.982,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "95d0e5eae7c71108f7f8c4fee515e51fce679360",
+              "why": "",
+              "covered_at": 1442946899
+            },
+            {
+              "sha": "5ce0b3a185cb7647fb9a947cac765935fe849241",
+              "why": "",
+              "covered_at": 1442946899
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "8e7e9b492cd90c1bb4079611850d881078741eb0",
+              "score": 1.701,
+              "why": "Changes search loop logic with no tests; library iteration semantics shifted",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "87ff75a2c4e4c33624015e9cadb7b50bbbae9a6d",
+              "score": 1.621,
+              "why": "New playlist event wiring across threads; tests touched but partial coverage",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "8e7e9b492cd90c1bb4079611850d881078741eb0",
+              "why": "Changes search loop logic with no tests; library iteration semantics shifted",
+              "covered_at": 1437082324
+            },
+            {
+              "sha": "95d0e5eae7c71108f7f8c4fee515e51fce679360",
+              "why": "Copies helper to avoid internal import; small, mostly mechanical",
+              "covered_at": 1442946899
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 6
+    },
+    {
+      "T": 1435622400,
+      "candidates": 1,
+      "events": 18,
+      "kb": {
+        "as_of": 1435622400,
+        "events": 819,
+        "commits": 263,
+        "files": 37,
+        "issues": 41,
+        "prs": 15,
+        "fixes": 19,
+        "bug_issues": 11
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "70f27932cbc728693140d5d264054fb8c777516f",
+              "score": 1.711,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "70f27932cbc728693140d5d264054fb8c777516f",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "70f27932cbc728693140d5d264054fb8c777516f",
+              "score": 1.12,
+              "why": "Dependency pin bump in setup.py; small, no logic change",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "70f27932cbc728693140d5d264054fb8c777516f",
+              "why": "Dependency pin bump in setup.py; small, no logic change",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1438214400,
+      "candidates": 10,
+      "events": 29,
+      "kb": {
+        "as_of": 1438214400,
+        "events": 848,
+        "commits": 273,
+        "files": 42,
+        "issues": 43,
+        "prs": 15,
+        "fixes": 20,
+        "bug_issues": 11
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "cfabcb54e1f398e8785548e6334886bb986b7897",
+              "score": 7.63,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "49ae81120fdae09b6956e51379ebc17b42d2fc38",
+              "score": 7.47,
+              "why": "",
+              "bug_fixed_at": 1440318282
+            }
+          ],
+          "tests": [
+            {
+              "sha": "cfabcb54e1f398e8785548e6334886bb986b7897",
+              "why": "",
+              "covered_at": 1439244196
+            },
+            {
+              "sha": "49ae81120fdae09b6956e51379ebc17b42d2fc38",
+              "why": "",
+              "covered_at": 1439244201
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "49ae81120fdae09b6956e51379ebc17b42d2fc38",
+              "score": 1.351,
+              "why": "Moves distinct logic and rewires config into library; no tests touched",
+              "bug_fixed_at": 1440318282
+            },
+            {
+              "sha": "cfabcb54e1f398e8785548e6334886bb986b7897",
+              "score": 1.301,
+              "why": "Large move of browse logic into new module with no tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "cfabcb54e1f398e8785548e6334886bb986b7897",
+              "why": "Large move of browse logic into new module with no tests touched",
+              "covered_at": 1439244196
+            },
+            {
+              "sha": "49ae81120fdae09b6956e51379ebc17b42d2fc38",
+              "why": "Moves distinct logic and rewires config into library; no tests touched",
+              "covered_at": 1439244201
+            }
+          ]
+        }
+      },
+      "positives_risky": 1,
+      "positives_tests": 4
+    },
+    {
+      "T": 1440806400,
+      "candidates": 18,
+      "events": 69,
+      "kb": {
+        "as_of": 1440806400,
+        "events": 917,
+        "commits": 291,
+        "files": 42,
+        "issues": 49,
+        "prs": 15,
+        "fixes": 22,
+        "bug_issues": 14
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "4d3cd01cd7e174900098ee2bf69aa11d4150c237",
+              "score": 5.636,
+              "why": "",
+              "bug_fixed_at": 1455450352
+            },
+            {
+              "sha": "a4da5c155f97fc0885e070fcbf2bcc6f7c78ebc5",
+              "score": 4.11,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "38c9088032686fd78d7ae31ad9a262cfada8d510",
+              "score": 3.909,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "cfe216a65e6da13efed3086aa3962c53fbedfd13",
+              "why": "",
+              "covered_at": 1447110422
+            },
+            {
+              "sha": "3d74cd2bcd18c4e294fcc0a3d8586da3c93d2064",
+              "why": "",
+              "covered_at": 1447110422
+            },
+            {
+              "sha": "c37f3524d947453c465d374d66e18b72d2f503b3",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "3d74cd2bcd18c4e294fcc0a3d8586da3c93d2064",
+              "score": 1.661,
+              "why": "Reworks session access in playlists with no tests, a file with history of bug fixes",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "4d3cd01cd7e174900098ee2bf69aa11d4150c237",
+              "score": 1.621,
+              "why": "Removes online tracking; search now queries connection state, behaviour shift in shared backend code",
+              "bug_fixed_at": 1455450352
+            },
+            {
+              "sha": "cfe216a65e6da13efed3086aa3962c53fbedfd13",
+              "score": 1.581,
+              "why": "Revert of playlist session change with no tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "3d74cd2bcd18c4e294fcc0a3d8586da3c93d2064",
+              "why": "Reworks session access in playlists with no tests, a file with history of bug fixes",
+              "covered_at": 1447110422
+            },
+            {
+              "sha": "cfe216a65e6da13efed3086aa3962c53fbedfd13",
+              "why": "Revert of playlist session change with no tests touched",
+              "covered_at": 1447110422
+            },
+            {
+              "sha": "c37f3524d947453c465d374d66e18b72d2f503b3",
+              "why": "CI infrastructure change only",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 1,
+      "positives_tests": 5
+    },
+    {
+      "T": 1443398400,
+      "candidates": 13,
+      "events": 77,
+      "kb": {
+        "as_of": 1443398400,
+        "events": 994,
+        "commits": 304,
+        "files": 42,
+        "issues": 54,
+        "prs": 17,
+        "fixes": 23,
+        "bug_issues": 15
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "ddf24857d849d65d080c1dbb356a51976a094508",
+              "score": 6.224,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "e499ecc7b4fed7730bef3b5020be76209ddcdad6",
+              "score": 4.239,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "0a90bd2263568b736d2463f9e01a30d2d3eae3c6",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "43996a5f0d305ab3eba1f90340408574fa7ec4f2",
+              "why": "",
+              "covered_at": 1453145158
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "e499ecc7b4fed7730bef3b5020be76209ddcdad6",
+              "score": 1.701,
+              "why": "Rewrites image fetching from urllib2 to requests; error paths changed, images.py has fixes",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "ddf24857d849d65d080c1dbb356a51976a094508",
+              "score": 1.621,
+              "why": "New session plumbing across library and images; touches fixed image code",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "0a90bd2263568b736d2463f9e01a30d2d3eae3c6",
+              "why": "Replaces manual proxy building with httpclient helper; small, tested",
+              "covered_at": null
+            },
+            {
+              "sha": "43996a5f0d305ab3eba1f90340408574fa7ec4f2",
+              "why": "Adds requests dependency; declarative change only",
+              "covered_at": 1453145158
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 4
+    },
+    {
+      "T": 1445990400,
+      "candidates": 0,
+      "events": 19,
+      "kb": {
+        "as_of": 1445990400,
+        "events": 1013,
+        "commits": 304,
+        "files": 42,
+        "issues": 57,
+        "prs": 18,
+        "fixes": 23,
+        "bug_issues": 16
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1448582400,
+      "candidates": 4,
+      "events": 42,
+      "kb": {
+        "as_of": 1448582400,
+        "events": 1095,
+        "commits": 308,
+        "files": 42,
+        "issues": 60,
+        "prs": 18,
+        "fixes": 23,
+        "bug_issues": 16
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "bcdcf7afcdcfe6a75f6c6b0f521c64099330dda6",
+              "score": 3.324,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "bcdcf7afcdcfe6a75f6c6b0f521c64099330dda6",
+              "score": 1.381,
+              "why": "Removes starred-playlist fetch logic; tests touched, but behaviour shifts in playlist listing",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 2
+    },
+    {
+      "T": 1451174400,
+      "candidates": 8,
+      "events": 49,
+      "kb": {
+        "as_of": 1451174400,
+        "events": 1144,
+        "commits": 316,
+        "files": 42,
+        "issues": 64,
+        "prs": 20,
+        "fixes": 24,
+        "bug_issues": 17
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "a8d460eb1f2d68e3eb694a997cf0273345ba3710",
+              "score": 3.853,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "de8920a8a3747ec149e3439c216747d8c746469b",
+              "why": "",
+              "covered_at": 1452758837
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "4aecaf93b1469cc2c22c98a8cd0fa4256e138eb9",
+              "score": 1.701,
+              "why": "Single-line playlist load fix for issue; no tests, author new, symptom-level",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "4aecaf93b1469cc2c22c98a8cd0fa4256e138eb9",
+              "why": "Single-line playlist load fix for issue; no tests, author new, symptom-level",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 3
+    },
+    {
+      "T": 1453766400,
+      "candidates": 5,
+      "events": 25,
+      "kb": {
+        "as_of": 1453766400,
+        "events": 1169,
+        "commits": 321,
+        "files": 42,
+        "issues": 68,
+        "prs": 20,
+        "fixes": 26,
+        "bug_issues": 20
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "48c633dc242dee1c9f39c64aa0794e498cae13a6",
+              "score": 2.766,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "48c633dc242dee1c9f39c64aa0794e498cae13a6",
+              "why": "",
+              "covered_at": 1454717969
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "48c633dc242dee1c9f39c64aa0794e498cae13a6",
+              "score": 1.721,
+              "why": "Blocking on future in change_track alters gapless timing; no tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "48c633dc242dee1c9f39c64aa0794e498cae13a6",
+              "why": "Blocking on future in change_track alters gapless timing; no tests touched",
+              "covered_at": 1454717969
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 3
+    },
+    {
+      "T": 1456358400,
+      "candidates": 25,
+      "events": 170,
+      "kb": {
+        "as_of": 1456358400,
+        "events": 1356,
+        "commits": 346,
+        "files": 43,
+        "issues": 76,
+        "prs": 23,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "10b0ad7eb19243ec4f779fb86ab2e52dcab3099f",
+              "score": 8.103,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "a4fb24c2ab66aa271dbda5fe3558839dee0ab158",
+              "score": 8.02,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "c76f0281f8d857f585ace3b3686224bdebb16294",
+              "score": 6.604,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "b3ca2ad71b60834a69da5d5bae0df69d38d42a66",
+              "score": 5.526,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "f735052e50aee36b112a72284fa236feac20c015",
+              "score": 4.926,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "c38ca771335648cdb45dc715a87285e3ea3e6e6d",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "f735052e50aee36b112a72284fa236feac20c015",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "fb19598a46c2122a8968065defbd1d63643de972",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "a77f87dc1b909ab379b4954a579c1aacff47c4e2",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "8a0e2e1b35bd3d877a4b631ccf4a65e56175e7a7",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "10b0ad7eb19243ec4f779fb86ab2e52dcab3099f",
+              "score": 1.721,
+              "why": "Large new Web API search logic in translator and search, many new lines, few tests visible",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "ef4bf687270a516dc68bcba941aa51737a5c8736",
+              "score": 1.661,
+              "why": "Reworks search limits and slicing; fix on same limit logic as c5",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "b3ca2ad71b60834a69da5d5bae0df69d38d42a66",
+              "score": 1.601,
+              "why": "New type filtering with conditional list building; search.py has prior fixes",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "f735052e50aee36b112a72284fa236feac20c015",
+              "score": 1.581,
+              "why": "Changes search limits behaviour with no tests touched",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "a4fb24c2ab66aa271dbda5fe3558839dee0ab158",
+              "score": 1.551,
+              "why": "Rewires distinct lookup to new search path across 96 changed lines",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "f735052e50aee36b112a72284fa236feac20c015",
+              "why": "Changes search limits behaviour with no tests touched",
+              "covered_at": null
+            },
+            {
+              "sha": "c38ca771335648cdb45dc715a87285e3ea3e6e6d",
+              "why": "Import workaround and user agent reference change, low logic change",
+              "covered_at": null
+            },
+            {
+              "sha": "a77f87dc1b909ab379b4954a579c1aacff47c4e2",
+              "why": "CI configuration change for test environment",
+              "covered_at": null
+            },
+            {
+              "sha": "fb19598a46c2122a8968065defbd1d63643de972",
+              "why": "Version bump and dependency pin",
+              "covered_at": null
+            },
+            {
+              "sha": "7419d2d94f74318664dd1bb7fa21160712df0cdb",
+              "why": "CI package install switch to GStreamer 1",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1458950400,
+      "candidates": 0,
+      "events": 15,
+      "kb": {
+        "as_of": 1458950400,
+        "events": 1371,
+        "commits": 346,
+        "files": 43,
+        "issues": 80,
+        "prs": 23,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1461542400,
+      "candidates": 0,
+      "events": 0,
+      "kb": {
+        "as_of": 1461542400,
+        "events": 1371,
+        "commits": 346,
+        "files": 43,
+        "issues": 80,
+        "prs": 23,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1464134400,
+      "candidates": 0,
+      "events": 2,
+      "kb": {
+        "as_of": 1464134400,
+        "events": 1373,
+        "commits": 346,
+        "files": 43,
+        "issues": 80,
+        "prs": 24,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1466726400,
+      "candidates": 0,
+      "events": 13,
+      "kb": {
+        "as_of": 1466726400,
+        "events": 1386,
+        "commits": 346,
+        "files": 43,
+        "issues": 82,
+        "prs": 24,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1469318400,
+      "candidates": 0,
+      "events": 10,
+      "kb": {
+        "as_of": 1469318400,
+        "events": 1396,
+        "commits": 346,
+        "files": 43,
+        "issues": 84,
+        "prs": 25,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1471910400,
+      "candidates": 0,
+      "events": 42,
+      "kb": {
+        "as_of": 1471910400,
+        "events": 1438,
+        "commits": 346,
+        "files": 43,
+        "issues": 88,
+        "prs": 25,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1474502400,
+      "candidates": 0,
+      "events": 23,
+      "kb": {
+        "as_of": 1474502400,
+        "events": 1461,
+        "commits": 346,
+        "files": 43,
+        "issues": 91,
+        "prs": 25,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1477094400,
+      "candidates": 0,
+      "events": 11,
+      "kb": {
+        "as_of": 1477094400,
+        "events": 1472,
+        "commits": 346,
+        "files": 43,
+        "issues": 91,
+        "prs": 25,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1479686400,
+      "candidates": 2,
+      "events": 25,
+      "kb": {
+        "as_of": 1479686400,
+        "events": 1497,
+        "commits": 348,
+        "files": 43,
+        "issues": 93,
+        "prs": 28,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "a9f956a6c2652a9e1475659c927a34ab984bf5c0",
+              "score": 4.812,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "a9f956a6c2652a9e1475659c927a34ab984bf5c0",
+              "score": 1.381,
+              "why": "Small local change with tests touched; translator file has several past fixes",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1482278400,
+      "candidates": 0,
+      "events": 14,
+      "kb": {
+        "as_of": 1482278400,
+        "events": 1511,
+        "commits": 348,
+        "files": 43,
+        "issues": 95,
+        "prs": 28,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1484870400,
+      "candidates": 0,
+      "events": 67,
+      "kb": {
+        "as_of": 1484870400,
+        "events": 1578,
+        "commits": 348,
+        "files": 43,
+        "issues": 100,
+        "prs": 28,
+        "fixes": 29,
+        "bug_issues": 21
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1487462400,
+      "candidates": 0,
+      "events": 55,
+      "kb": {
+        "as_of": 1487462400,
+        "events": 1633,
+        "commits": 348,
+        "files": 43,
+        "issues": 103,
+        "prs": 29,
+        "fixes": 29,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1490054400,
+      "candidates": 0,
+      "events": 20,
+      "kb": {
+        "as_of": 1490054400,
+        "events": 1653,
+        "commits": 348,
+        "files": 43,
+        "issues": 105,
+        "prs": 29,
+        "fixes": 29,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1492646400,
+      "candidates": 1,
+      "events": 20,
+      "kb": {
+        "as_of": 1492646400,
+        "events": 1673,
+        "commits": 349,
+        "files": 43,
+        "issues": 107,
+        "prs": 30,
+        "fixes": 29,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "ad60d00a6792ce7c1578a92c7a77cbe5be18cb81",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "ad60d00a6792ce7c1578a92c7a77cbe5be18cb81",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1495238400,
+      "candidates": 3,
+      "events": 64,
+      "kb": {
+        "as_of": 1495238400,
+        "events": 1737,
+        "commits": 352,
+        "files": 44,
+        "issues": 110,
+        "prs": 31,
+        "fixes": 30,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "f09b4b84fc2eb4487344fdd700bfe86b29daa9d1",
+              "score": 9.93,
+              "why": "",
+              "bug_fixed_at": 1496835376
+            }
+          ],
+          "tests": [
+            {
+              "sha": "f09b4b84fc2eb4487344fdd700bfe86b29daa9d1",
+              "why": "",
+              "covered_at": 1496835376
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "f09b4b84fc2eb4487344fdd700bfe86b29daa9d1",
+              "score": 1.721,
+              "why": "Large cross-file refactor replacing requests_session with OAuth client; no tests touched",
+              "bug_fixed_at": 1496835376
+            }
+          ],
+          "tests": [
+            {
+              "sha": "f09b4b84fc2eb4487344fdd700bfe86b29daa9d1",
+              "why": "Large cross-file refactor replacing requests_session with OAuth client; no tests touched",
+              "covered_at": 1496835376
+            }
+          ]
+        }
+      },
+      "positives_risky": 1,
+      "positives_tests": 1
+    },
+    {
+      "T": 1497830400,
+      "candidates": 8,
+      "events": 133,
+      "kb": {
+        "as_of": 1497830400,
+        "events": 1870,
+        "commits": 360,
+        "files": 45,
+        "issues": 113,
+        "prs": 32,
+        "fixes": 32,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "e9fb82f4771e18244a81d505abbffa36e5f4b0b3",
+              "score": 7.362,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "d5dfff058032b5b90f6d95d2e2b8e36feefca440",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "e9fb82f4771e18244a81d505abbffa36e5f4b0b3",
+              "score": 1.621,
+              "why": "Large OAuth refactor across files with prior bug fixes; tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "d5dfff058032b5b90f6d95d2e2b8e36feefca440",
+              "why": "Changes URL handling and signature of web client; no tests touched",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1500422400,
+      "candidates": 8,
+      "events": 45,
+      "kb": {
+        "as_of": 1500422400,
+        "events": 1915,
+        "commits": 368,
+        "files": 45,
+        "issues": 119,
+        "prs": 33,
+        "fixes": 33,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "d70f83b8b7f11416beab94b2a7dbbbcbf6143d4f",
+              "score": 5.871,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "d70f83b8b7f11416beab94b2a7dbbbcbf6143d4f",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "d70f83b8b7f11416beab94b2a7dbbbcbf6143d4f",
+              "score": 1.801,
+              "why": "Large retry/timeout rewrite of web client with no tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "d70f83b8b7f11416beab94b2a7dbbbcbf6143d4f",
+              "why": "Large retry/timeout rewrite of web client with no tests touched",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1503014400,
+      "candidates": 0,
+      "events": 51,
+      "kb": {
+        "as_of": 1503014400,
+        "events": 1966,
+        "commits": 368,
+        "files": 45,
+        "issues": 124,
+        "prs": 33,
+        "fixes": 33,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1505606400,
+      "candidates": 0,
+      "events": 29,
+      "kb": {
+        "as_of": 1505606400,
+        "events": 1995,
+        "commits": 368,
+        "files": 45,
+        "issues": 126,
+        "prs": 33,
+        "fixes": 33,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1508198400,
+      "candidates": 1,
+      "events": 20,
+      "kb": {
+        "as_of": 1508198400,
+        "events": 2015,
+        "commits": 369,
+        "files": 45,
+        "issues": 129,
+        "prs": 34,
+        "fixes": 34,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "68512f6af6b7136f0cc3cfb5724d8061803f9f1a",
+              "score": 4.094,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "68512f6af6b7136f0cc3cfb5724d8061803f9f1a",
+              "score": 1.3,
+              "why": "Small local pause override with tests; playback.py has several past fixes",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1510790400,
+      "candidates": 0,
+      "events": 15,
+      "kb": {
+        "as_of": 1510790400,
+        "events": 2030,
+        "commits": 369,
+        "files": 45,
+        "issues": 130,
+        "prs": 34,
+        "fixes": 34,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1513382400,
+      "candidates": 0,
+      "events": 7,
+      "kb": {
+        "as_of": 1513382400,
+        "events": 2037,
+        "commits": 369,
+        "files": 45,
+        "issues": 132,
+        "prs": 34,
+        "fixes": 34,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1515974400,
+      "candidates": 0,
+      "events": 38,
+      "kb": {
+        "as_of": 1515974400,
+        "events": 2075,
+        "commits": 369,
+        "files": 45,
+        "issues": 137,
+        "prs": 34,
+        "fixes": 34,
+        "bug_issues": 24
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1518566400,
+      "candidates": 0,
+      "events": 9,
+      "kb": {
+        "as_of": 1518566400,
+        "events": 2084,
+        "commits": 369,
+        "files": 45,
+        "issues": 139,
+        "prs": 34,
+        "fixes": 34,
+        "bug_issues": 25
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1521158400,
+      "candidates": 0,
+      "events": 11,
+      "kb": {
+        "as_of": 1521158400,
+        "events": 2095,
+        "commits": 369,
+        "files": 45,
+        "issues": 140,
+        "prs": 34,
+        "fixes": 34,
+        "bug_issues": 25
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1523750400,
+      "candidates": 0,
+      "events": 28,
+      "kb": {
+        "as_of": 1523750400,
+        "events": 2123,
+        "commits": 369,
+        "files": 45,
+        "issues": 142,
+        "prs": 35,
+        "fixes": 34,
+        "bug_issues": 25
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1526342400,
+      "candidates": 0,
+      "events": 18,
+      "kb": {
+        "as_of": 1526342400,
+        "events": 2141,
+        "commits": 369,
+        "files": 45,
+        "issues": 145,
+        "prs": 35,
+        "fixes": 34,
+        "bug_issues": 25
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1528934400,
+      "candidates": 0,
+      "events": 30,
+      "kb": {
+        "as_of": 1528934400,
+        "events": 2279,
+        "commits": 369,
+        "files": 45,
+        "issues": 152,
+        "prs": 36,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1531526400,
+      "candidates": 0,
+      "events": 52,
+      "kb": {
+        "as_of": 1531526400,
+        "events": 2331,
+        "commits": 369,
+        "files": 45,
+        "issues": 153,
+        "prs": 37,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1534118400,
+      "candidates": 0,
+      "events": 49,
+      "kb": {
+        "as_of": 1534118400,
+        "events": 2380,
+        "commits": 369,
+        "files": 45,
+        "issues": 155,
+        "prs": 38,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1536710400,
+      "candidates": 1,
+      "events": 46,
+      "kb": {
+        "as_of": 1536710400,
+        "events": 2426,
+        "commits": 370,
+        "files": 45,
+        "issues": 157,
+        "prs": 40,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "4c9ef7ab538824e0cd4a41148cbc02ccf2629066",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "4c9ef7ab538824e0cd4a41148cbc02ccf2629066",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1539302400,
+      "candidates": 0,
+      "events": 77,
+      "kb": {
+        "as_of": 1539302400,
+        "events": 2503,
+        "commits": 370,
+        "files": 45,
+        "issues": 160,
+        "prs": 40,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1541894400,
+      "candidates": 0,
+      "events": 67,
+      "kb": {
+        "as_of": 1541894400,
+        "events": 2570,
+        "commits": 370,
+        "files": 45,
+        "issues": 162,
+        "prs": 40,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1544486400,
+      "candidates": 0,
+      "events": 19,
+      "kb": {
+        "as_of": 1544486400,
+        "events": 2589,
+        "commits": 370,
+        "files": 45,
+        "issues": 165,
+        "prs": 40,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1547078400,
+      "candidates": 0,
+      "events": 27,
+      "kb": {
+        "as_of": 1547078400,
+        "events": 2616,
+        "commits": 370,
+        "files": 45,
+        "issues": 168,
+        "prs": 40,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1549670400,
+      "candidates": 2,
+      "events": 89,
+      "kb": {
+        "as_of": 1549670400,
+        "events": 2705,
+        "commits": 372,
+        "files": 45,
+        "issues": 170,
+        "prs": 42,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "50eda7be17a90fa86f427f099b52f830c26a1680",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "50eda7be17a90fa86f427f099b52f830c26a1680",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1552262400,
+      "candidates": 0,
+      "events": 96,
+      "kb": {
+        "as_of": 1552262400,
+        "events": 2801,
+        "commits": 372,
+        "files": 45,
+        "issues": 174,
+        "prs": 42,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1554854400,
+      "candidates": 0,
+      "events": 25,
+      "kb": {
+        "as_of": 1554854400,
+        "events": 2826,
+        "commits": 372,
+        "files": 45,
+        "issues": 177,
+        "prs": 43,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1557446400,
+      "candidates": 0,
+      "events": 1,
+      "kb": {
+        "as_of": 1557446400,
+        "events": 2827,
+        "commits": 372,
+        "files": 45,
+        "issues": 177,
+        "prs": 43,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1560038400,
+      "candidates": 0,
+      "events": 10,
+      "kb": {
+        "as_of": 1560038400,
+        "events": 2837,
+        "commits": 372,
+        "files": 45,
+        "issues": 178,
+        "prs": 43,
+        "fixes": 34,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1562630400,
+      "candidates": 2,
+      "events": 56,
+      "kb": {
+        "as_of": 1562630400,
+        "events": 2893,
+        "commits": 374,
+        "files": 45,
+        "issues": 180,
+        "prs": 44,
+        "fixes": 35,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "13ebf3dc7a1a58ae4cf50b35a129a446ef2a3ee1",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "13ebf3dc7a1a58ae4cf50b35a129a446ef2a3ee1",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1565222400,
+      "candidates": 0,
+      "events": 32,
+      "kb": {
+        "as_of": 1565222400,
+        "events": 2925,
+        "commits": 374,
+        "files": 45,
+        "issues": 182,
+        "prs": 44,
+        "fixes": 35,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1567814400,
+      "candidates": 0,
+      "events": 5,
+      "kb": {
+        "as_of": 1567814400,
+        "events": 2930,
+        "commits": 374,
+        "files": 45,
+        "issues": 182,
+        "prs": 44,
+        "fixes": 35,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1570406400,
+      "candidates": 3,
+      "events": 39,
+      "kb": {
+        "as_of": 1570406400,
+        "events": 2969,
+        "commits": 377,
+        "files": 45,
+        "issues": 183,
+        "prs": 46,
+        "fixes": 35,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "9f1f7ea69a6a65ba295122af359bba808533f738",
+              "score": 6.013,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "3facb9d01a21ed075716911d5a30900ebe014491",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "9f1f7ea69a6a65ba295122af359bba808533f738",
+              "score": 1.721,
+              "why": "Large rewrite of web client caching and query handling; 139 added lines, one earlier fix",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "3facb9d01a21ed075716911d5a30900ebe014491",
+              "why": "CI and tox configuration only; no code logic changed",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1572998400,
+      "candidates": 0,
+      "events": 12,
+      "kb": {
+        "as_of": 1572998400,
+        "events": 2981,
+        "commits": 377,
+        "files": 45,
+        "issues": 184,
+        "prs": 46,
+        "fixes": 35,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1575590400,
+      "candidates": 33,
+      "events": 152,
+      "kb": {
+        "as_of": 1575590400,
+        "events": 3133,
+        "commits": 410,
+        "files": 48,
+        "issues": 186,
+        "prs": 49,
+        "fixes": 39,
+        "bug_issues": 26
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "bd3da9180676da4e2ff4c1137f9588a97d86a6c8",
+              "score": 12.93,
+              "why": "",
+              "bug_fixed_at": 1576788162
+            },
+            {
+              "sha": "4aafc68be8d41cd6b54b42f90d034b8277b35f9d",
+              "score": 11.481,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "3e72043779e0bd4e384a7e809af7b034b2dd8654",
+              "score": 10.394,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "2fffa56d4f80d5151cae4bf75899331c6189ec5b",
+              "score": 10.118,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "91af7e72aeb74e8dc23a3aa9c18ff7f54cea8753",
+              "score": 9.524,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "31fd0927ed183241ffe72f9f1dc65efa1006032a",
+              "score": 8.626,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "31fd0927ed183241ffe72f9f1dc65efa1006032a",
+              "why": "",
+              "covered_at": 1578612969
+            },
+            {
+              "sha": "39de74f1a7c2db1f49a58dc0412deb4730d51ac7",
+              "why": "",
+              "covered_at": 1576018775
+            },
+            {
+              "sha": "2446f5dc21c8eac7fcfc61b72f458d3ca439ccc1",
+              "why": "",
+              "covered_at": 1576017801
+            },
+            {
+              "sha": "3c3d7ce3b439d484955d154e24d2a6c714b3ea79",
+              "why": "",
+              "covered_at": 1576018775
+            },
+            {
+              "sha": "2fc114b0bfffdc7db71864ace46478b0cc3faa66",
+              "why": "",
+              "covered_at": 1576018775
+            },
+            {
+              "sha": "b6ac0668bf2ac5601f0a7bf38cabd1a8e9618904",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "4aafc68be8d41cd6b54b42f90d034b8277b35f9d",
+              "score": 1.881,
+              "why": "Replaces playlist backend with Web API; large logic rewrite across files",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "6dd39cf14252b517bc8fe972d0adf1d4f4d6bdb3",
+              "score": 1.781,
+              "why": "Forced cache expiry rewrite with new logged_in gating and cache logic",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "0eac9dac8a82462b9686703dc7cba83cbff83a49",
+              "score": 1.551,
+              "why": "Changes login refresh and loaded-state gating; new early returns",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "58266d6b6e1652edb41fcf6d9d12e65b9edfa19d",
+              "score": 1.421,
+              "why": "Py3 fixes: bytes casts, Hashable, filter-to-list semantics changed",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "4eef4d0bfc0a7650ee1adb9e04ae1166ded0fec8",
+              "score": 1.401,
+              "why": "New OAuth client subclass and login flow; tests touched",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "3c3d7ce3b439d484955d154e24d2a6c714b3ea79",
+              "score": 1.301,
+              "why": "Removes encoding step for search query and urlencode values, no tests",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "3c3d7ce3b439d484955d154e24d2a6c714b3ea79",
+              "why": "Removes encoding step for search query and urlencode values, no tests",
+              "covered_at": 1576018775
+            },
+            {
+              "sha": "b6ac0668bf2ac5601f0a7bf38cabd1a8e9618904",
+              "why": "Version now read from installed distribution metadata",
+              "covered_at": null
+            },
+            {
+              "sha": "31fd0927ed183241ffe72f9f1dc65efa1006032a",
+              "why": "Project config/CI overhaul; little runtime code affected",
+              "covered_at": 1578612969
+            },
+            {
+              "sha": "2446f5dc21c8eac7fcfc61b72f458d3ca439ccc1",
+              "why": "os to pathlib path construction, no tests touched",
+              "covered_at": 1576017801
+            },
+            {
+              "sha": "39de74f1a7c2db1f49a58dc0412deb4730d51ac7",
+              "why": "Mostly module-path renames; URL quoting kept, tests absent",
+              "covered_at": 1576018775
+            },
+            {
+              "sha": "2fc114b0bfffdc7db71864ace46478b0cc3faa66",
+              "why": "Simple f-string swap in URI building",
+              "covered_at": 1576018775
+            }
+          ]
+        }
+      },
+      "positives_risky": 2,
+      "positives_tests": 7
+    },
+    {
+      "T": 1578182400,
+      "candidates": 26,
+      "events": 358,
+      "kb": {
+        "as_of": 1578182400,
+        "events": 3491,
+        "commits": 436,
+        "files": 48,
+        "issues": 192,
+        "prs": 58,
+        "fixes": 43,
+        "bug_issues": 28
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "69fec17d900a9a3d36275e13bea5cfa82c99a3c9",
+              "score": 8.472,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "9282db8b1c72eb0e0acac2123b6e782780fcba24",
+              "score": 7.479,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "54b2de1349e8938d595c0d0bbbd88eee5b5cd250",
+              "score": 7.089,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "42f06b9cc272bfbd0b434893e69ee23b50e7588f",
+              "score": 6.748,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "44e94fe19abc5f340af8fe465be54cfb1e4212f0",
+              "score": 6.492,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "6fc61b315ac33a531ba1d8819403aa5edd971ff3",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "501dc5bb4d906d617ce2af1a4b4edf2ab0c1da66",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "31aa9b74d9c769fac27700cd815017ebdc1c5089",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "be2589938d68b909e8a82ea06473e1f5c72e9e08",
+              "why": "",
+              "covered_at": 1578612969
+            },
+            {
+              "sha": "8c0080711072425ba985d9b671fd73e310efc6f1",
+              "why": "",
+              "covered_at": 1578612969
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "69fec17d900a9a3d36275e13bea5cfa82c99a3c9",
+              "score": 1.621,
+              "why": "Large new Web API browse logic across three files; tests touched",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "44e94fe19abc5f340af8fe465be54cfb1e4212f0",
+              "score": 1.551,
+              "why": "Rewrites WebLink parsing with enum; public-ish API change in web.py",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "d47f53b01d70eecd79e1af753cf43d695dbfdcc5",
+              "score": 1.501,
+              "why": "New featured playlists browsing and reworked browse routing",
+              "bug_fixed_at": 1578612969
+            },
+            {
+              "sha": "54b2de1349e8938d595c0d0bbbd88eee5b5cd250",
+              "score": 1.481,
+              "why": "New browse directories and web album translation; tests touched",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "0ec5cc0a00b477dd54c61c2eb9f0591934bb9d13",
+              "score": 1.451,
+              "why": "New playlist image path with caching in shared image code",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "6fc61b315ac33a531ba1d8819403aa5edd971ff3",
+              "why": "Log level changes and removed timing wrapper; no tests touched",
+              "covered_at": null
+            },
+            {
+              "sha": "501dc5bb4d906d617ce2af1a4b4edf2ab0c1da66",
+              "why": "Pyupgrade modernization; yield-from change with no tests",
+              "covered_at": null
+            },
+            {
+              "sha": "31aa9b74d9c769fac27700cd815017ebdc1c5089",
+              "why": "Build config removal; no logic change",
+              "covered_at": null
+            },
+            {
+              "sha": "be2589938d68b909e8a82ea06473e1f5c72e9e08",
+              "why": "Version bump and dependency pin change",
+              "covered_at": 1578612969
+            },
+            {
+              "sha": "8c0080711072425ba985d9b671fd73e310efc6f1",
+              "why": "Version bump only",
+              "covered_at": 1578612969
+            }
+          ]
+        }
+      },
+      "positives_risky": 1,
+      "positives_tests": 7
+    },
+    {
+      "T": 1580774400,
+      "candidates": 2,
+      "events": 40,
+      "kb": {
+        "as_of": 1580774400,
+        "events": 3531,
+        "commits": 438,
+        "files": 48,
+        "issues": 196,
+        "prs": 59,
+        "fixes": 44,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "dfb9785df78af66e919a26370a91fc8d6a51119a",
+              "score": 2.679,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "6032663966b4cf912082c206728416568779bb84",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "dfb9785df78af66e919a26370a91fc8d6a51119a",
+              "score": 1.621,
+              "why": "Hardcodes endpoint in browse file with prior bug-fix history; tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "6032663966b4cf912082c206728416568779bb84",
+              "why": "Version bump only, no logic change",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1583366400,
+      "candidates": 0,
+      "events": 46,
+      "kb": {
+        "as_of": 1583366400,
+        "events": 3577,
+        "commits": 438,
+        "files": 48,
+        "issues": 198,
+        "prs": 59,
+        "fixes": 44,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1585958400,
+      "candidates": 0,
+      "events": 12,
+      "kb": {
+        "as_of": 1585958400,
+        "events": 3589,
+        "commits": 438,
+        "files": 48,
+        "issues": 200,
+        "prs": 60,
+        "fixes": 44,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1588550400,
+      "candidates": 3,
+      "events": 24,
+      "kb": {
+        "as_of": 1588550400,
+        "events": 3613,
+        "commits": 441,
+        "files": 48,
+        "issues": 205,
+        "prs": 60,
+        "fixes": 44,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "b693fa04570e2bbefd7c91c60f4e0ef4b4be34f5",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "b693fa04570e2bbefd7c91c60f4e0ef4b4be34f5",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1591142400,
+      "candidates": 0,
+      "events": 10,
+      "kb": {
+        "as_of": 1591142400,
+        "events": 3623,
+        "commits": 441,
+        "files": 48,
+        "issues": 205,
+        "prs": 60,
+        "fixes": 44,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1593734400,
+      "candidates": 0,
+      "events": 17,
+      "kb": {
+        "as_of": 1593734400,
+        "events": 3640,
+        "commits": 441,
+        "files": 48,
+        "issues": 207,
+        "prs": 60,
+        "fixes": 44,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1596326400,
+      "candidates": 0,
+      "events": 25,
+      "kb": {
+        "as_of": 1596326400,
+        "events": 3665,
+        "commits": 441,
+        "files": 48,
+        "issues": 208,
+        "prs": 61,
+        "fixes": 44,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1598918400,
+      "candidates": 3,
+      "events": 37,
+      "kb": {
+        "as_of": 1598918400,
+        "events": 3702,
+        "commits": 444,
+        "files": 48,
+        "issues": 210,
+        "prs": 63,
+        "fixes": 44,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "d77a73b170b5d845b416492c8728b76d5a91eec9",
+              "score": 5.822,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "979a6b3a4ac604706de465ddbb9a86a815a8bfeb",
+              "why": "",
+              "covered_at": 1604416792
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "d77a73b170b5d845b416492c8728b76d5a91eec9",
+              "score": 1.061,
+              "why": "Formatting-only Black reflow; tests touched, no logic change",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "979a6b3a4ac604706de465ddbb9a86a815a8bfeb",
+              "why": "Removes unneeded f-prefix; trivial one-line string change, no tests",
+              "covered_at": 1604416792
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1601510400,
+      "candidates": 4,
+      "events": 27,
+      "kb": {
+        "as_of": 1601510400,
+        "events": 3729,
+        "commits": 448,
+        "files": 48,
+        "issues": 214,
+        "prs": 64,
+        "fixes": 45,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "ecafd9ab459ae6abbc3ce2a78b0a2eae41a08523",
+              "score": 6.395,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "ecafd9ab459ae6abbc3ce2a78b0a2eae41a08523",
+              "why": "",
+              "covered_at": 1606239484
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "ecafd9ab459ae6abbc3ce2a78b0a2eae41a08523",
+              "score": 1.621,
+              "why": "New global held-buffer logic in playback with no tests, 2-commit author",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "ecafd9ab459ae6abbc3ce2a78b0a2eae41a08523",
+              "why": "New global held-buffer logic in playback with no tests, 2-commit author",
+              "covered_at": 1606239484
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 3
+    },
+    {
+      "T": 1604102400,
+      "candidates": 0,
+      "events": 30,
+      "kb": {
+        "as_of": 1604102400,
+        "events": 3759,
+        "commits": 448,
+        "files": 48,
+        "issues": 219,
+        "prs": 65,
+        "fixes": 45,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1606694400,
+      "candidates": 2,
+      "events": 131,
+      "kb": {
+        "as_of": 1606694400,
+        "events": 3890,
+        "commits": 450,
+        "files": 48,
+        "issues": 223,
+        "prs": 66,
+        "fixes": 45,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "5b35448066c52be90970c05bd827292d991098af",
+              "score": 7.328,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "0ac120d090811e8da113a0115ee1d3773bf3084b",
+              "score": 1.7,
+              "why": "Rewrites audio buffer hold logic in playback with 6 prior fixes",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1609286400,
+      "candidates": 7,
+      "events": 67,
+      "kb": {
+        "as_of": 1609286400,
+        "events": 3957,
+        "commits": 457,
+        "files": 49,
+        "issues": 224,
+        "prs": 70,
+        "fixes": 45,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "a4aa63adb291d0c3a6f5af53fe466564b2e4c878",
+              "score": 3.753,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "3b2306081b89acc486b977d20b427068aa72eef3",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "a4aa63adb291d0c3a6f5af53fe466564b2e4c878",
+              "score": 1.381,
+              "why": "Small guard change in web data validation, tests touched, but file has many bug fixes",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "3b2306081b89acc486b977d20b427068aa72eef3",
+              "why": "CI and version metadata additions; low logic risk",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1611878400,
+      "candidates": 8,
+      "events": 83,
+      "kb": {
+        "as_of": 1611878400,
+        "events": 4088,
+        "commits": 465,
+        "files": 50,
+        "issues": 227,
+        "prs": 73,
+        "fixes": 46,
+        "bug_issues": 29
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "bfcdceebf49526c4e7449a3d465508bc560b7af5",
+              "score": 5.557,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "c97722be16a3b03d948b9f00bf8e1aed855a806a",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "66d40fc2ebc5f33a58ede3db4c9e1087ea81ac1a",
+              "score": 1.451,
+              "why": "Changes playlist API endpoint; tests touched, but external behaviour shift",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "bfcdceebf49526c4e7449a3d465508bc560b7af5",
+              "why": "Behaviour change in playback buffering with no tests touched",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1614470400,
+      "candidates": 0,
+      "events": 11,
+      "kb": {
+        "as_of": 1614470400,
+        "events": 4099,
+        "commits": 465,
+        "files": 50,
+        "issues": 231,
+        "prs": 73,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1617062400,
+      "candidates": 0,
+      "events": 10,
+      "kb": {
+        "as_of": 1617062400,
+        "events": 4109,
+        "commits": 465,
+        "files": 50,
+        "issues": 232,
+        "prs": 73,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1619654400,
+      "candidates": 0,
+      "events": 10,
+      "kb": {
+        "as_of": 1619654400,
+        "events": 4119,
+        "commits": 465,
+        "files": 50,
+        "issues": 234,
+        "prs": 73,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1622246400,
+      "candidates": 0,
+      "events": 6,
+      "kb": {
+        "as_of": 1622246400,
+        "events": 4125,
+        "commits": 465,
+        "files": 50,
+        "issues": 234,
+        "prs": 73,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1624838400,
+      "candidates": 0,
+      "events": 13,
+      "kb": {
+        "as_of": 1624838400,
+        "events": 4138,
+        "commits": 465,
+        "files": 50,
+        "issues": 237,
+        "prs": 73,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1627430400,
+      "candidates": 1,
+      "events": 8,
+      "kb": {
+        "as_of": 1627430400,
+        "events": 4146,
+        "commits": 466,
+        "files": 50,
+        "issues": 237,
+        "prs": 74,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "9935fca1f614b94696b83560743aec378b16c23e",
+              "score": 3.692,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "9935fca1f614b94696b83560743aec378b16c23e",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "9935fca1f614b94696b83560743aec378b16c23e",
+              "score": 1.08,
+              "why": "Single logging line added; no logic change, low risk",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "9935fca1f614b94696b83560743aec378b16c23e",
+              "why": "Single logging line added; no logic change, low risk",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1630022400,
+      "candidates": 2,
+      "events": 24,
+      "kb": {
+        "as_of": 1630022400,
+        "events": 4170,
+        "commits": 468,
+        "files": 50,
+        "issues": 238,
+        "prs": 78,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "587fd401db2b28ff3b96e088a5b1582d2b5d3af7",
+              "score": 5.496,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "72efe7925ef5c04042fc2f4ec6b9a9136cbd2f6d",
+              "why": "",
+              "covered_at": 1642030375
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "587fd401db2b28ff3b96e088a5b1582d2b5d3af7",
+              "score": 1.081,
+              "why": "Data-only country list update; tests touched, low logic risk",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "72efe7925ef5c04042fc2f4ec6b9a9136cbd2f6d",
+              "why": "Trivial deprecated logger.warn to warning rename; no logic change",
+              "covered_at": 1642030375
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1632614400,
+      "candidates": 0,
+      "events": 13,
+      "kb": {
+        "as_of": 1632614400,
+        "events": 4183,
+        "commits": 468,
+        "files": 50,
+        "issues": 239,
+        "prs": 79,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1635206400,
+      "candidates": 0,
+      "events": 3,
+      "kb": {
+        "as_of": 1635206400,
+        "events": 4186,
+        "commits": 468,
+        "files": 50,
+        "issues": 239,
+        "prs": 79,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1637798400,
+      "candidates": 0,
+      "events": 9,
+      "kb": {
+        "as_of": 1637798400,
+        "events": 4195,
+        "commits": 468,
+        "files": 50,
+        "issues": 242,
+        "prs": 79,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1640390400,
+      "candidates": 0,
+      "events": 16,
+      "kb": {
+        "as_of": 1640390400,
+        "events": 4211,
+        "commits": 468,
+        "files": 50,
+        "issues": 244,
+        "prs": 79,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1642982400,
+      "candidates": 2,
+      "events": 58,
+      "kb": {
+        "as_of": 1642982400,
+        "events": 4269,
+        "commits": 470,
+        "files": 50,
+        "issues": 246,
+        "prs": 80,
+        "fixes": 46,
+        "bug_issues": 30
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "797a486647d7e15670fca3499461f2295afeaa8a",
+              "score": 7.484,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "797a486647d7e15670fca3499461f2295afeaa8a",
+              "score": 1.621,
+              "why": "New exact-search logic across translator and search; author new, touches fixed-often files",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1645574400,
+      "candidates": 2,
+      "events": 47,
+      "kb": {
+        "as_of": 1645574400,
+        "events": 4316,
+        "commits": 472,
+        "files": 50,
+        "issues": 248,
+        "prs": 81,
+        "fixes": 46,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "6a9a51035bc3e90d1668a5fb07e90946167fd3f4",
+              "score": 8.279,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "56ebd46cb88b68530f1d9b7519491f380ddc0ef9",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "6a9a51035bc3e90d1668a5fb07e90946167fd3f4",
+              "score": 1.721,
+              "why": "Rewrites browse logic and adds lookup path in files with prior bug fixes",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "56ebd46cb88b68530f1d9b7519491f380ddc0ef9",
+              "why": "CI, packaging and version config changes only; no logic",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1648166400,
+      "candidates": 0,
+      "events": 21,
+      "kb": {
+        "as_of": 1648166400,
+        "events": 4337,
+        "commits": 472,
+        "files": 50,
+        "issues": 251,
+        "prs": 82,
+        "fixes": 46,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1650758400,
+      "candidates": 2,
+      "events": 20,
+      "kb": {
+        "as_of": 1650758400,
+        "events": 4357,
+        "commits": 474,
+        "files": 50,
+        "issues": 253,
+        "prs": 83,
+        "fixes": 47,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "09857b077c5776b99d58a6adbb759ec5691c461d",
+              "score": 3.736,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "bd2ef1942c13bb1d3d789cdb1c0a33212ae461c8",
+              "why": "",
+              "covered_at": 1655341428
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "09857b077c5776b99d58a6adbb759ec5691c461d",
+              "score": 1.551,
+              "why": "Login-state guards in browse paths; fixes prior bug, tests touched, but browse.py has many fixes",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "bd2ef1942c13bb1d3d789cdb1c0a33212ae461c8",
+              "why": "Pure black formatting of an expression, no logic change",
+              "covered_at": 1655341428
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1653350400,
+      "candidates": 7,
+      "events": 76,
+      "kb": {
+        "as_of": 1653350400,
+        "events": 4433,
+        "commits": 481,
+        "files": 51,
+        "issues": 258,
+        "prs": 83,
+        "fixes": 47,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "8255c920679711aef2961907849b478a7c7f75a2",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "8255c920679711aef2961907849b478a7c7f75a2",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1655942400,
+      "candidates": 8,
+      "events": 109,
+      "kb": {
+        "as_of": 1655942400,
+        "events": 4542,
+        "commits": 489,
+        "files": 51,
+        "issues": 259,
+        "prs": 86,
+        "fixes": 48,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "9026ec591d25d58346d51706d487392372cd2374",
+              "score": 11.145,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "493a61fab27a183d96bbe70937d8bbe64bee21e1",
+              "why": "",
+              "covered_at": 1656202204
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "9026ec591d25d58346d51706d487392372cd2374",
+              "score": 1.721,
+              "why": "Large removal of pyspotify playback and lookup paths; behaviour shifts, many touched files",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "493a61fab27a183d96bbe70937d8bbe64bee21e1",
+              "why": "Null-session guards from new author, no tests, fragile long conditions in browse.py",
+              "covered_at": 1656202204
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1658534400,
+      "candidates": 2,
+      "events": 39,
+      "kb": {
+        "as_of": 1658534400,
+        "events": 4581,
+        "commits": 491,
+        "files": 51,
+        "issues": 260,
+        "prs": 86,
+        "fixes": 48,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "fb51baa7ea0f1d7e36b9ae5a56ea10cb9354e222",
+              "score": 5.375,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "fb51baa7ea0f1d7e36b9ae5a56ea10cb9354e222",
+              "score": 1.451,
+              "why": "Changes album ref naming logic in translator with fallback branches; tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1661126400,
+      "candidates": 7,
+      "events": 45,
+      "kb": {
+        "as_of": 1661126400,
+        "events": 4626,
+        "commits": 498,
+        "files": 51,
+        "issues": 260,
+        "prs": 87,
+        "fixes": 50,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "ed98d03e47d3b9c008d7463612124a90af5cf017",
+              "score": 9.71,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "e2ae214e3eed0ea64cd7a0979ea6a30c57136a4c",
+              "why": "",
+              "covered_at": 1670420532
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "2fd5cee0159dc1b2cdbe02926c58178f91927d6f",
+              "score": 1.721,
+              "why": "Large browse rewrite removing toplist logic; web.py behaviour changes with many edits",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "e2ae214e3eed0ea64cd7a0979ea6a30c57136a4c",
+              "why": "Behaviour change in error path with no tests touched",
+              "covered_at": 1670420532
+            }
+          ]
+        }
+      },
+      "positives_risky": 1,
+      "positives_tests": 1
+    },
+    {
+      "T": 1663718400,
+      "candidates": 1,
+      "events": 14,
+      "kb": {
+        "as_of": 1663718400,
+        "events": 4640,
+        "commits": 499,
+        "files": 51,
+        "issues": 260,
+        "prs": 87,
+        "fixes": 50,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "d3797b9ed912d71158ebfa682233af91d1bf4bdb",
+              "score": 4.986,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "d3797b9ed912d71158ebfa682233af91d1bf4bdb",
+              "score": 1.62,
+              "why": "Rewrites auth/config setup in backend, touches fixed file; tests touched helps",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1666310400,
+      "candidates": 0,
+      "events": 4,
+      "kb": {
+        "as_of": 1666310400,
+        "events": 4644,
+        "commits": 499,
+        "files": 51,
+        "issues": 260,
+        "prs": 87,
+        "fixes": 50,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1668902400,
+      "candidates": 0,
+      "events": 23,
+      "kb": {
+        "as_of": 1668902400,
+        "events": 4667,
+        "commits": 499,
+        "files": 51,
+        "issues": 261,
+        "prs": 87,
+        "fixes": 50,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1671494400,
+      "candidates": 3,
+      "events": 18,
+      "kb": {
+        "as_of": 1671494400,
+        "events": 4685,
+        "commits": 502,
+        "files": 51,
+        "issues": 261,
+        "prs": 87,
+        "fixes": 51,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "3c766ba1c0354164c8515d342112ca1562de1271",
+              "score": 3.361,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "6d6a87f248989de66aa195acc226942bcd37e8fc",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "3c766ba1c0354164c8515d342112ca1562de1271",
+              "score": 1.421,
+              "why": "Retry date handling changed to total_seconds and broad except; tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "6d6a87f248989de66aa195acc226942bcd37e8fc",
+              "why": "Dependency version floor bump in setup.cfg; no logic change",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1674086400,
+      "candidates": 0,
+      "events": 46,
+      "kb": {
+        "as_of": 1674086400,
+        "events": 4731,
+        "commits": 502,
+        "files": 51,
+        "issues": 261,
+        "prs": 87,
+        "fixes": 51,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1676678400,
+      "candidates": 0,
+      "events": 33,
+      "kb": {
+        "as_of": 1676678400,
+        "events": 4764,
+        "commits": 502,
+        "files": 51,
+        "issues": 261,
+        "prs": 87,
+        "fixes": 51,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1679270400,
+      "candidates": 8,
+      "events": 71,
+      "kb": {
+        "as_of": 1679270400,
+        "events": 4835,
+        "commits": 510,
+        "files": 51,
+        "issues": 261,
+        "prs": 87,
+        "fixes": 51,
+        "bug_issues": 31
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "5530dad96e424ac403f1c1d4ed7c551b9aefb732",
+              "score": 7.052,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "5530dad96e424ac403f1c1d4ed7c551b9aefb732",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "1d6a492ccb5d7ff9207c2215414d19190545650e",
+              "score": 1.551,
+              "why": "Cache and config logic rewritten in playback provider; tests touched but caching behaviour changed",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "5530dad96e424ac403f1c1d4ed7c551b9aefb732",
+              "why": "Large removal of country list and libspotify traces; images.py touched, mostly deletions",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1681862400,
+      "candidates": 7,
+      "events": 130,
+      "kb": {
+        "as_of": 1681862400,
+        "events": 4965,
+        "commits": 517,
+        "files": 51,
+        "issues": 264,
+        "prs": 92,
+        "fixes": 54,
+        "bug_issues": 33
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "4725d0669b5080a764c2319997ba43f4d3d3a69c",
+              "score": 5.621,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "c4f52b9c54418ff0b4938a4a8ddb09877d465217",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "4725d0669b5080a764c2319997ba43f4d3d3a69c",
+              "score": 1.621,
+              "why": "New cache config flows into backend; unit-scale multiplication, tests touched but thin",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "c4f52b9c54418ff0b4938a4a8ddb09877d465217",
+              "why": "Python version bump across CI and metadata; no tests touched, mostly config",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1684454400,
+      "candidates": 6,
+      "events": 45,
+      "kb": {
+        "as_of": 1684454400,
+        "events": 5010,
+        "commits": 523,
+        "files": 51,
+        "issues": 265,
+        "prs": 93,
+        "fixes": 56,
+        "bug_issues": 33
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "ce6eb0661a69d5a505d5e7fa2d106c53f571830c",
+              "score": 5.49,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "ce6eb0661a69d5a505d5e7fa2d106c53f571830c",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "c84755083dc8308409ba2b116bfcdfbbcd72f329",
+              "score": 1.451,
+              "why": "New credentials dir logic with mode and makedirs; no tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "c84755083dc8308409ba2b116bfcdfbbcd72f329",
+              "why": "New credentials dir logic with mode and makedirs; no tests touched",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1687046400,
+      "candidates": 2,
+      "events": 12,
+      "kb": {
+        "as_of": 1687046400,
+        "events": 5022,
+        "commits": 525,
+        "files": 51,
+        "issues": 268,
+        "prs": 93,
+        "fixes": 56,
+        "bug_issues": 33
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "43d49bb29d9ef9dce9f333d080a8d56ad38ece4e",
+              "score": 2.686,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "43d49bb29d9ef9dce9f333d080a8d56ad38ece4e",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "43d49bb29d9ef9dce9f333d080a8d56ad38ece4e",
+              "score": 1.081,
+              "why": "Dependency addition only; no logic or behaviour change",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "43d49bb29d9ef9dce9f333d080a8d56ad38ece4e",
+              "why": "Dependency addition only; no logic or behaviour change",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1689638400,
+      "candidates": 1,
+      "events": 7,
+      "kb": {
+        "as_of": 1689638400,
+        "events": 5029,
+        "commits": 526,
+        "files": 51,
+        "issues": 268,
+        "prs": 94,
+        "fixes": 56,
+        "bug_issues": 33
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "a82e1b2016dbfeddb4ac9c6027c2cdaf0331b9b1",
+              "score": 1.713,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "a82e1b2016dbfeddb4ac9c6027c2cdaf0331b9b1",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "a82e1b2016dbfeddb4ac9c6027c2cdaf0331b9b1",
+              "score": 1.12,
+              "why": "CI trigger change only; low runtime impact, but could skip branch builds",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "a82e1b2016dbfeddb4ac9c6027c2cdaf0331b9b1",
+              "why": "CI trigger change only; low runtime impact, but could skip branch builds",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1692230400,
+      "candidates": 0,
+      "events": 9,
+      "kb": {
+        "as_of": 1692230400,
+        "events": 5038,
+        "commits": 526,
+        "files": 51,
+        "issues": 268,
+        "prs": 94,
+        "fixes": 56,
+        "bug_issues": 33
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1694822400,
+      "candidates": 0,
+      "events": 7,
+      "kb": {
+        "as_of": 1694822400,
+        "events": 5045,
+        "commits": 526,
+        "files": 51,
+        "issues": 269,
+        "prs": 94,
+        "fixes": 56,
+        "bug_issues": 33
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1697414400,
+      "candidates": 0,
+      "events": 8,
+      "kb": {
+        "as_of": 1697414400,
+        "events": 5053,
+        "commits": 526,
+        "files": 51,
+        "issues": 269,
+        "prs": 94,
+        "fixes": 56,
+        "bug_issues": 33
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1700006400,
+      "candidates": 1,
+      "events": 34,
+      "kb": {
+        "as_of": 1700006400,
+        "events": 5087,
+        "commits": 527,
+        "files": 51,
+        "issues": 271,
+        "prs": 95,
+        "fixes": 57,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "48faaaa2642647b0152231798b46ccd9631694f5",
+              "score": 6.92,
+              "why": "",
+              "bug_fixed_at": 1709328057
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "48faaaa2642647b0152231798b46ccd9631694f5",
+              "score": 1.62,
+              "why": "Rewrites URI parsing in images.py, a file with repeated past bug fixes; tests touched",
+              "bug_fixed_at": 1709328057
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 1,
+      "positives_tests": 0
+    },
+    {
+      "T": 1702598400,
+      "candidates": 0,
+      "events": 0,
+      "kb": {
+        "as_of": 1702598400,
+        "events": 5087,
+        "commits": 527,
+        "files": 51,
+        "issues": 271,
+        "prs": 95,
+        "fixes": 57,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1705190400,
+      "candidates": 6,
+      "events": 82,
+      "kb": {
+        "as_of": 1705190400,
+        "events": 5169,
+        "commits": 533,
+        "files": 51,
+        "issues": 271,
+        "prs": 100,
+        "fixes": 59,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "ede555c4c6e5f198659a979b85c69294d148c8f3",
+              "score": 6.425,
+              "why": "",
+              "bug_fixed_at": 1709328057
+            }
+          ],
+          "tests": [
+            {
+              "sha": "f62d491871152400c310a5e72788e6282903c72f",
+              "why": "",
+              "covered_at": 1709045516
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "ede555c4c6e5f198659a979b85c69294d148c8f3",
+              "score": 1.551,
+              "why": "New import cycle and uri-filtering logic in images, though tests touched",
+              "bug_fixed_at": 1709328057
+            }
+          ],
+          "tests": [
+            {
+              "sha": "20077716974f2ac4d0cfec02456cb21b90265179",
+              "why": "Changes API field syntax with no tests, a behaviour-affecting query change",
+              "covered_at": 1709328057
+            }
+          ]
+        }
+      },
+      "positives_risky": 2,
+      "positives_tests": 3
+    },
+    {
+      "T": 1707782400,
+      "candidates": 1,
+      "events": 25,
+      "kb": {
+        "as_of": 1707782400,
+        "events": 5194,
+        "commits": 534,
+        "files": 51,
+        "issues": 273,
+        "prs": 101,
+        "fixes": 59,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "fc6ffb3bbbae9224316e2a888db08ef56608966a",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "fc6ffb3bbbae9224316e2a888db08ef56608966a",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1710374400,
+      "candidates": 26,
+      "events": 156,
+      "kb": {
+        "as_of": 1710374400,
+        "events": 5350,
+        "commits": 560,
+        "files": 64,
+        "issues": 274,
+        "prs": 108,
+        "fixes": 63,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "bcb6a527e029e2ce9be635304284cc662497d033",
+              "score": 8.235,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "b99e76d9a06776b40e33fcb421aef850f7b58bc5",
+              "score": 7.605,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "bf0c716569d29e5e94345042cb2f23e2ad12b2f3",
+              "score": 7.496,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "7288e13ec353aaff19f12b3803b8bb36d38abff4",
+              "score": 6.696,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "398e7f9556343f5ce07540c1e9e8ae54d7980065",
+              "score": 6.486,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "bf0c716569d29e5e94345042cb2f23e2ad12b2f3",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "7288e13ec353aaff19f12b3803b8bb36d38abff4",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "1c3be55625f2c09c427f2fc2cae1cba2bc897d7f",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "dabb639cabb9e5e9492395a7991771177848c7f6",
+              "why": "",
+              "covered_at": 1710543509
+            },
+            {
+              "sha": "6c390f7b66bfcc7d0ad7f4b14f6b01253fca43bc",
+              "why": "",
+              "covered_at": 1710547028
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "a4404f80be5bb0190f3b830d5520d123a6b98afd",
+              "score": 1.801,
+              "why": "New locks and cache logic from a new author; no tests, fragile threading",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "836f089e2adabca85e51a74a2bc58276787ffca8",
+              "score": 1.781,
+              "why": "Concurrency change to playlist loading and locks; tests touched but risky",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "997928e2115fd8e7901eda0a71b55e762093528b",
+              "score": 1.721,
+              "why": "New deferred loading and refresh flag in playlists; state-dependent logic",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "112d4abbb3f5b6477dab796f2824fa42196bfa0a",
+              "score": 1.661,
+              "why": "Int parsing of float API values; behaviour change on core track fields",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "bcb6a527e029e2ce9be635304284cc662497d033",
+              "score": 1.621,
+              "why": "Large rewrites of browse, distinct, images logic; tests touched but many changed lines",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "a4404f80be5bb0190f3b830d5520d123a6b98afd",
+              "why": "New locks and cache logic from a new author; no tests, fragile threading",
+              "covered_at": 1710547028
+            },
+            {
+              "sha": "6c390f7b66bfcc7d0ad7f4b14f6b01253fca43bc",
+              "why": "Lock refactor with early return in refresh path; no tests touched",
+              "covered_at": 1710547028
+            },
+            {
+              "sha": "fbfb1fef4a425109d5fa52682771c0353dc41c0f",
+              "why": "Changes a return and enum usage in web.py without tests",
+              "covered_at": 1710547028
+            },
+            {
+              "sha": "1aab6bfa6db7dac0764d79c5993cba7fd73dd337",
+              "why": "Replaces pkg_resources with importlib.metadata; small local change",
+              "covered_at": 1712925835
+            },
+            {
+              "sha": "bf0c716569d29e5e94345042cb2f23e2ad12b2f3",
+              "why": "Large packaging migration; setup.cfg to pyproject, no tests, build-breaking risk",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 5
+    },
+    {
+      "T": 1712966400,
+      "candidates": 11,
+      "events": 27,
+      "kb": {
+        "as_of": 1712966400,
+        "events": 5377,
+        "commits": 571,
+        "files": 64,
+        "issues": 276,
+        "prs": 109,
+        "fixes": 63,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "e2fea504ac1f1937b226193be20e6a814232d775",
+              "score": 7.758,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "82ac2b24f7b2bc9140346b17fc0e8bb4a6de7038",
+              "score": 6.908,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "6ae154d7f7244325c4d853f47694b7159b7bd33f",
+              "why": "",
+              "covered_at": 1713309909
+            },
+            {
+              "sha": "aeeb0e9deddb440e76277c33a1081824b3517160",
+              "why": "",
+              "covered_at": 1713309909
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "82ac2b24f7b2bc9140346b17fc0e8bb4a6de7038",
+              "score": 1.701,
+              "why": "Batched fetching logic moved across images, utils and web; large scattered change",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "aeeb0e9deddb440e76277c33a1081824b3517160",
+              "score": 1.681,
+              "why": "New locks and token refresh handling in web.py with no tests",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "aeeb0e9deddb440e76277c33a1081824b3517160",
+              "why": "New locks and token refresh handling in web.py with no tests",
+              "covered_at": 1713309909
+            },
+            {
+              "sha": "6ae154d7f7244325c4d853f47694b7159b7bd33f",
+              "why": "Playlist refresh behaviour changed in background thread without tests",
+              "covered_at": 1713309909
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 2
+    },
+    {
+      "T": 1715558400,
+      "candidates": 3,
+      "events": 30,
+      "kb": {
+        "as_of": 1715558400,
+        "events": 5407,
+        "commits": 574,
+        "files": 64,
+        "issues": 276,
+        "prs": 111,
+        "fixes": 63,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "dbb653ab4821c6e68cff1eb2de29082b95d95210",
+              "score": 8.04,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "d759f4bae2705192b48227aef7a05ecf03d81c7d",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "dbb653ab4821c6e68cff1eb2de29082b95d95210",
+              "score": 1.721,
+              "why": "Large rewrite of lookup batching and web API; cache and search changes, many lines cut",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "d759f4bae2705192b48227aef7a05ecf03d81c7d",
+              "why": "Dependency version bump only, no logic change",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1718150400,
+      "candidates": 0,
+      "events": 9,
+      "kb": {
+        "as_of": 1718150400,
+        "events": 5416,
+        "commits": 574,
+        "files": 64,
+        "issues": 278,
+        "prs": 111,
+        "fixes": 63,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1720742400,
+      "candidates": 0,
+      "events": 8,
+      "kb": {
+        "as_of": 1720742400,
+        "events": 5424,
+        "commits": 574,
+        "files": 64,
+        "issues": 279,
+        "prs": 111,
+        "fixes": 63,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1723334400,
+      "candidates": 0,
+      "events": 14,
+      "kb": {
+        "as_of": 1723334400,
+        "events": 5438,
+        "commits": 574,
+        "files": 64,
+        "issues": 280,
+        "prs": 111,
+        "fixes": 63,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1725926400,
+      "candidates": 1,
+      "events": 70,
+      "kb": {
+        "as_of": 1725926400,
+        "events": 5508,
+        "commits": 575,
+        "files": 64,
+        "issues": 283,
+        "prs": 111,
+        "fixes": 63,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "e088c33e5158d6fbebd95d9651fb7bd20abf8c80",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "e088c33e5158d6fbebd95d9651fb7bd20abf8c80",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1728518400,
+      "candidates": 18,
+      "events": 250,
+      "kb": {
+        "as_of": 1728518400,
+        "events": 5758,
+        "commits": 593,
+        "files": 64,
+        "issues": 287,
+        "prs": 116,
+        "fixes": 66,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "d025bb415c2d4e6ff238bc6fa0916b88ec1755bd",
+              "score": 10.323,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "468bef41914b8e8348bf61f37ce81cf66d8fb4d1",
+              "score": 6.965,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "74f5bd9dffa9334c27592cebfa75800ac8bfd76d",
+              "score": 4.821,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "ddf99b121ebfb04063d9ce63c041d9137175212c",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "468bef41914b8e8348bf61f37ce81cf66d8fb4d1",
+              "score": 1.721,
+              "why": "Auth switched to access tokens; new token path, failure returns None, deprecated settings",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "74f5bd9dffa9334c27592cebfa75800ac8bfd76d",
+              "score": 1.701,
+              "why": "Duplicate of c2 under src/ layout; same auth logic change with fresh risk",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "d025bb415c2d4e6ff238bc6fa0916b88ec1755bd",
+              "score": 1.121,
+              "why": "Mostly formatting reflow; one lint-only signature change, tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "ddf99b121ebfb04063d9ce63c041d9137175212c",
+              "why": "Version bump only",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1731110400,
+      "candidates": 3,
+      "events": 56,
+      "kb": {
+        "as_of": 1731110400,
+        "events": 5814,
+        "commits": 596,
+        "files": 66,
+        "issues": 288,
+        "prs": 118,
+        "fixes": 67,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "72c0f6954c62a32062707b2fa46acbba630b5c6d",
+              "score": 4.512,
+              "why": "",
+              "bug_fixed_at": 1741389977
+            }
+          ],
+          "tests": [
+            {
+              "sha": "394edc48850428634a0329e3bed62501fde42c5b",
+              "why": "",
+              "covered_at": 1741389977
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "72c0f6954c62a32062707b2fa46acbba630b5c6d",
+              "score": 1.421,
+              "why": "New logout command and credential-dir logic; tests touched but new behaviour",
+              "bug_fixed_at": 1741389977
+            }
+          ],
+          "tests": [
+            {
+              "sha": "394edc48850428634a0329e3bed62501fde42c5b",
+              "why": "Signature and log message tweaks; cosmetic, low behavioural change",
+              "covered_at": 1741389977
+            }
+          ]
+        }
+      },
+      "positives_risky": 1,
+      "positives_tests": 1
+    },
+    {
+      "T": 1733702400,
+      "candidates": 0,
+      "events": 7,
+      "kb": {
+        "as_of": 1733702400,
+        "events": 5821,
+        "commits": 596,
+        "files": 66,
+        "issues": 288,
+        "prs": 118,
+        "fixes": 67,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1736294400,
+      "candidates": 0,
+      "events": 7,
+      "kb": {
+        "as_of": 1736294400,
+        "events": 5828,
+        "commits": 596,
+        "files": 66,
+        "issues": 289,
+        "prs": 118,
+        "fixes": 67,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1738886400,
+      "candidates": 0,
+      "events": 2,
+      "kb": {
+        "as_of": 1738886400,
+        "events": 5830,
+        "commits": 596,
+        "files": 66,
+        "issues": 289,
+        "prs": 118,
+        "fixes": 67,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1741478400,
+      "candidates": 6,
+      "events": 15,
+      "kb": {
+        "as_of": 1741478400,
+        "events": 5845,
+        "commits": 602,
+        "files": 68,
+        "issues": 289,
+        "prs": 119,
+        "fixes": 70,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "1744483ac2395aeb836bf8b9a04809575ac87a53",
+              "score": 7.819,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "60a51db5c9c2d9d424e0fd16d07660237d94a31a",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "1d25c1836dcb2834f4e96a270fc5ed890bb3bbaf",
+              "score": 1.351,
+              "why": "Scattered lint edits across many modules, including web.py error raises",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "60a51db5c9c2d9d424e0fd16d07660237d94a31a",
+              "why": "Formatting-only change in web.py string literals",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 2
+    },
+    {
+      "T": 1744070400,
+      "candidates": 0,
+      "events": 7,
+      "kb": {
+        "as_of": 1744070400,
+        "events": 5852,
+        "commits": 602,
+        "files": 68,
+        "issues": 291,
+        "prs": 119,
+        "fixes": 70,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1746662400,
+      "candidates": 0,
+      "events": 0,
+      "kb": {
+        "as_of": 1746662400,
+        "events": 5852,
+        "commits": 602,
+        "files": 68,
+        "issues": 291,
+        "prs": 119,
+        "fixes": 70,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1749254400,
+      "candidates": 1,
+      "events": 1,
+      "kb": {
+        "as_of": 1749254400,
+        "events": 5853,
+        "commits": 603,
+        "files": 68,
+        "issues": 291,
+        "prs": 119,
+        "fixes": 70,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "7a67d832d5c0ddc65e6024b7f7248d5e18d92bda",
+              "score": 0.002,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "7a67d832d5c0ddc65e6024b7f7248d5e18d92bda",
+              "why": "",
+              "covered_at": 1752749376
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "7a67d832d5c0ddc65e6024b7f7248d5e18d92bda",
+              "score": 1.02,
+              "why": "Single-line template version bump in copier answers file",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "7a67d832d5c0ddc65e6024b7f7248d5e18d92bda",
+              "why": "Single-line template version bump in copier answers file",
+              "covered_at": 1752749376
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1751846400,
+      "candidates": 1,
+      "events": 6,
+      "kb": {
+        "as_of": 1751846400,
+        "events": 5859,
+        "commits": 604,
+        "files": 68,
+        "issues": 292,
+        "prs": 119,
+        "fixes": 70,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "fb2ee49a728f1b29a0d7dc5c029088280901a0c9",
+              "score": 2.315,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "fb2ee49a728f1b29a0d7dc5c029088280901a0c9",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "fb2ee49a728f1b29a0d7dc5c029088280901a0c9",
+              "score": 1.04,
+              "why": "Template version bump plus lint command flag; no behaviour change",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "fb2ee49a728f1b29a0d7dc5c029088280901a0c9",
+              "why": "Template version bump plus lint command flag; no behaviour change",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1754438400,
+      "candidates": 1,
+      "events": 18,
+      "kb": {
+        "as_of": 1754438400,
+        "events": 5877,
+        "commits": 605,
+        "files": 68,
+        "issues": 293,
+        "prs": 119,
+        "fixes": 71,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "e48cac11dd5359c94bbf2b4b6da2e2de83d1d723",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "e48cac11dd5359c94bbf2b4b6da2e2de83d1d723",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1757030400,
+      "candidates": 1,
+      "events": 76,
+      "kb": {
+        "as_of": 1757030400,
+        "events": 5953,
+        "commits": 606,
+        "files": 68,
+        "issues": 295,
+        "prs": 119,
+        "fixes": 71,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "7937cf37a0c536e6ab23b60685601c618b637ce8",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "7937cf37a0c536e6ab23b60685601c618b637ce8",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1759622400,
+      "candidates": 0,
+      "events": 1,
+      "kb": {
+        "as_of": 1759622400,
+        "events": 5954,
+        "commits": 606,
+        "files": 68,
+        "issues": 295,
+        "prs": 119,
+        "fixes": 71,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1762214400,
+      "candidates": 0,
+      "events": 13,
+      "kb": {
+        "as_of": 1762214400,
+        "events": 5967,
+        "commits": 606,
+        "files": 68,
+        "issues": 296,
+        "prs": 119,
+        "fixes": 71,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1764806400,
+      "candidates": 2,
+      "events": 73,
+      "kb": {
+        "as_of": 1764806400,
+        "events": 6040,
+        "commits": 608,
+        "files": 68,
+        "issues": 298,
+        "prs": 120,
+        "fixes": 72,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "064b021d6f2490b56c520301b6cf984f84de0f81",
+              "score": 5.452,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "064b021d6f2490b56c520301b6cf984f84de0f81",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "064b021d6f2490b56c520301b6cf984f84de0f81",
+              "score": 1.221,
+              "why": "Broad tooling bump raising Python floor to 3.13 and dependency minimums",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "064b021d6f2490b56c520301b6cf984f84de0f81",
+              "why": "Broad tooling bump raising Python floor to 3.13 and dependency minimums",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1767398400,
+      "candidates": 4,
+      "events": 21,
+      "kb": {
+        "as_of": 1767398400,
+        "events": 6061,
+        "commits": 612,
+        "files": 68,
+        "issues": 298,
+        "prs": 122,
+        "fixes": 74,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "b48ec59bc08b8ad37af24c4a04508831e7ba79ec",
+              "score": 1.9,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "05b79ccc75bb1f85dc8fd088ca0d3fcc4658b0e2",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "b48ec59bc08b8ad37af24c4a04508831e7ba79ec",
+              "score": 1.221,
+              "why": "Import and call change in playlists, a file with several past bug fixes",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "eda433d77c957fc3ae2b01dcb91fd22bdc21f797",
+              "why": "Small string change to dist_name with no test coverage",
+              "covered_at": 1777123053
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1769990400,
+      "candidates": 0,
+      "events": 2,
+      "kb": {
+        "as_of": 1769990400,
+        "events": 6063,
+        "commits": 612,
+        "files": 68,
+        "issues": 298,
+        "prs": 123,
+        "fixes": 74,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1772582400,
+      "candidates": 1,
+      "events": 13,
+      "kb": {
+        "as_of": 1772582400,
+        "events": 6076,
+        "commits": 613,
+        "files": 68,
+        "issues": 300,
+        "prs": 123,
+        "fixes": 74,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "8bd6327380c6838154861a58a64af2b46e322499",
+              "score": 6.015,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "8bd6327380c6838154861a58a64af2b46e322499",
+              "score": 1.55,
+              "why": "Rewrites command framework and public entry point; tests touched but CLI behaviour shifts",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1775174400,
+      "candidates": 0,
+      "events": 11,
+      "kb": {
+        "as_of": 1775174400,
+        "events": 6087,
+        "commits": 613,
+        "files": 68,
+        "issues": 301,
+        "prs": 123,
+        "fixes": 74,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {}
+    },
+    {
+      "T": 1777766400,
+      "candidates": 11,
+      "events": 34,
+      "kb": {
+        "as_of": 1777766400,
+        "events": 6121,
+        "commits": 624,
+        "files": 69,
+        "issues": 301,
+        "prs": 127,
+        "fixes": 75,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "630fdc7e8f14cab8347e4eb990e196210c1bb4b3",
+              "score": 10.859,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "db5d2888d4477344a12ed721176401a663b78bb6",
+              "score": 9.875,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "fa879eaf9c77f26bea10df631dedc028cf5ec0b5",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "88da110e56672b028cc835b673628bae832279b1",
+              "why": "",
+              "covered_at": 1791648424
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "07f5e2b5529050a76f28a8358b18bd04fb03f37e",
+              "score": 1.581,
+              "why": "Reverts a Mopidy v4 hack; lookup behaviour restored without new test changes",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "630fdc7e8f14cab8347e4eb990e196210c1bb4b3",
+              "score": 1.421,
+              "why": "Large typing rewrite across many files; signature changes like AudioProxy could break callers",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "fa879eaf9c77f26bea10df631dedc028cf5ec0b5",
+              "why": "Removes unused dead code; no behaviour change",
+              "covered_at": null
+            },
+            {
+              "sha": "88da110e56672b028cc835b673628bae832279b1",
+              "why": "Dependency version floor bump; minimal logic change",
+              "covered_at": 1791648424
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1780358400,
+      "candidates": 1,
+      "events": 1,
+      "kb": {
+        "as_of": 1780358400,
+        "events": 6122,
+        "commits": 625,
+        "files": 69,
+        "issues": 301,
+        "prs": 127,
+        "fixes": 75,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "db21f80c10db9f3e6850b1f181a5b613f15839c8",
+              "score": 2.521,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "db21f80c10db9f3e6850b1f181a5b613f15839c8",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "db21f80c10db9f3e6850b1f181a5b613f15839c8",
+              "score": 1.08,
+              "why": "Template and CI action version bumps; minor workflow risk only",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "db21f80c10db9f3e6850b1f181a5b613f15839c8",
+              "why": "Template and CI action version bumps; minor workflow risk only",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1782950400,
+      "candidates": 2,
+      "events": 18,
+      "kb": {
+        "as_of": 1782950400,
+        "events": 6140,
+        "commits": 627,
+        "files": 69,
+        "issues": 301,
+        "prs": 130,
+        "fixes": 77,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "13d1b79de75d8b9d85d78789bb444b25c5254a61",
+              "score": 3.126,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "13d1b79de75d8b9d85d78789bb444b25c5254a61",
+              "why": "",
+              "covered_at": 1791028598
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "13d1b79de75d8b9d85d78789bb444b25c5254a61",
+              "score": 1.221,
+              "why": "Small local fallback in a hot file with prior fixes, no tests",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "13d1b79de75d8b9d85d78789bb444b25c5254a61",
+              "why": "Small local fallback in a hot file with prior fixes, no tests",
+              "covered_at": 1791028598
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 1
+    },
+    {
+      "T": 1785542400,
+      "candidates": 1,
+      "events": 1,
+      "kb": {
+        "as_of": 1785542400,
+        "events": 6141,
+        "commits": 628,
+        "files": 69,
+        "issues": 301,
+        "prs": 130,
+        "fixes": 77,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "2caac4b094a0a78b7898a3d74da693458486ffc4",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "2caac4b094a0a78b7898a3d74da693458486ffc4",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1788134400,
+      "candidates": 1,
+      "events": 51,
+      "kb": {
+        "as_of": 1788134400,
+        "events": 6192,
+        "commits": 629,
+        "files": 69,
+        "issues": 303,
+        "prs": 130,
+        "fixes": 77,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "0202ae4f87fe4ed566a284f5dd5b82c9aa518c89",
+              "score": -10.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "0202ae4f87fe4ed566a284f5dd5b82c9aa518c89",
+              "score": 0.0,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": []
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    },
+    {
+      "T": 1790726400,
+      "candidates": 16,
+      "events": 334,
+      "kb": {
+        "as_of": 1790726400,
+        "events": 6526,
+        "commits": 645,
+        "files": 82,
+        "issues": 303,
+        "prs": 142,
+        "fixes": 78,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "55acdb2c4a2cac8b919b5c9d573e48efdd1b8ecb",
+              "score": 7.551,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "e59be07e7b67b01fb8d971c6d71fcf41347053a9",
+              "score": 7.024,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "5a1943d23a3f268641d86431c2c72ef8789d39f2",
+              "score": 6.196,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "b6d5b0ead2d0e5dd4ab9dc244b222bef1ac755f4",
+              "why": "",
+              "covered_at": 1791648424
+            },
+            {
+              "sha": "fae4bf2d5c077892a74b90dadbbb063d4725edd4",
+              "why": "",
+              "covered_at": 1791030246
+            },
+            {
+              "sha": "2b0bc08fb7da6e0943272a46a1196ec2c7a83c15",
+              "why": "",
+              "covered_at": 1791028598
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "8aac02e23e537be5c43339b44ff56b222ec5c78b",
+              "score": 1.701,
+              "why": "Rewrites atomic replace in utils, which has prior bug fixes",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "55acdb2c4a2cac8b919b5c9d573e48efdd1b8ecb",
+              "score": 1.621,
+              "why": "Large new token and atomic-replace logic; tests touched, utils has prior fixes",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "e59be07e7b67b01fb8d971c6d71fcf41347053a9",
+              "score": 1.551,
+              "why": "New durable replacement and keyring facade; tests touched but concurrency semantics subtle",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "b6d5b0ead2d0e5dd4ab9dc244b222bef1ac755f4",
+              "why": "CI and template version bump; workflow permissions only",
+              "covered_at": 1791648424
+            },
+            {
+              "sha": "fae4bf2d5c077892a74b90dadbbb063d4725edd4",
+              "why": "Import rename cleanup with no logic change",
+              "covered_at": 1791030246
+            },
+            {
+              "sha": "2b0bc08fb7da6e0943272a46a1196ec2c7a83c15",
+              "why": "Comments only, explaining durability steps",
+              "covered_at": 1791028598
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 3
+    },
+    {
+      "T": 1793318400,
+      "candidates": 22,
+      "events": 198,
+      "kb": {
+        "as_of": 1793318400,
+        "events": 6724,
+        "commits": 667,
+        "files": 121,
+        "issues": 303,
+        "prs": 145,
+        "fixes": 80,
+        "bug_issues": 34
+      },
+      "code_sha": null,
+      "by_predictor": {
+        "kb_heuristic": {
+          "risky": [
+            {
+              "sha": "81b13f5ea684b211f0ad737596feb1b9633f7220",
+              "score": 9.469,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "a188c5033f39b6b2d6da4f61bee21501dc9ccbfb",
+              "score": 9.361,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "182078c5245d49bbd5f08a983eb0a17d23b25ae0",
+              "score": 7.347,
+              "why": "",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "324cb49ccc019f7166eb07c01ec5b3d0a9d23f24",
+              "score": 7.078,
+              "why": "",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "23588e0c5e96a544b89395f6ff986cdeebe3df4c",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "6c371c6eee0741f9605bb4446f1b425b17bdd670",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "3e5507a6524e82b09c1c594ee0bbdbd9b7b01bbd",
+              "why": "",
+              "covered_at": null
+            },
+            {
+              "sha": "1ae6a4452d1567df7cea4818d48acc0e1854a271",
+              "why": "",
+              "covered_at": null
+            }
+          ]
+        },
+        "claude_insight": {
+          "risky": [
+            {
+              "sha": "a188c5033f39b6b2d6da4f61bee21501dc9ccbfb",
+              "score": 1.901,
+              "why": "Rewires backend token flow and web.py with 480+ new lines",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "81b13f5ea684b211f0ad737596feb1b9633f7220",
+              "score": 1.881,
+              "why": "Large rewrite of auth state, store and manifest across many files",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "051eef18ac637ab2d3490105219b98759ae0101f",
+              "score": 1.721,
+              "why": "Adds scrypt fingerprinting and changes bridge retry semantics",
+              "bug_fixed_at": null
+            },
+            {
+              "sha": "182078c5245d49bbd5f08a983eb0a17d23b25ae0",
+              "score": 1.621,
+              "why": "New refresh provider and web.py OAuth models, tests touched",
+              "bug_fixed_at": null
+            }
+          ],
+          "tests": [
+            {
+              "sha": "1ae6a4452d1567df7cea4818d48acc0e1854a271",
+              "why": "Behaviour change in parser with no tests added",
+              "covered_at": null
+            },
+            {
+              "sha": "3e5507a6524e82b09c1c594ee0bbdbd9b7b01bbd",
+              "why": "Test dependency lower bound pin",
+              "covered_at": null
+            },
+            {
+              "sha": "23588e0c5e96a544b89395f6ff986cdeebe3df4c",
+              "why": "CI and template version bump, no code logic",
+              "covered_at": null
+            },
+            {
+              "sha": "6c371c6eee0741f9605bb4446f1b425b17bdd670",
+              "why": "Docstring markup changes only",
+              "covered_at": null
+            }
+          ]
+        }
+      },
+      "positives_risky": 0,
+      "positives_tests": 0
+    }
+  ]
+}

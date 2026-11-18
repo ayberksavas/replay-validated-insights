@@ -18,6 +18,7 @@ from ..store import SCHEMA
 from ..kb import KnowledgeBase
 from ..kb.code import CodeIndex
 from ..kb.events import COMMIT, ISSUE, ISSUE_EVENT, COMMENT
+from ..kb.memory import InsightMemory, NoteError, derive_notes
 from ..predictor import Flag, RandomBaseline, MostChangedFiles
 from ..heuristics import KBHeuristic
 from ..insight import ClaudeInsight
@@ -119,7 +120,9 @@ class Worker:
         self.store = sqlite3.connect(self.store_path)
         self.store.executescript(SCHEMA)
         self.kb = KnowledgeBase()
+        self.memory = InsightMemory()      # dated notes this system wrote at earlier steps (per repo)
         self.view = SandboxView(self.store_path, channel, self.kb)
+        self.view.memory = self.memory
         self.view.code = CodeIndex(os.path.join(root, "code"))   # the code as of T, kept there by the host
         self.predictor = PREDICTORS[predictor](**(options or {}))
 
@@ -144,7 +147,12 @@ class Worker:
         st.commit()
         self.kb.apply(events, as_of=as_of)
         self.view.as_of = as_of
-        return {"as_of": as_of, "new_events": len(events), "kb": self.kb.summary()}
+        derive_notes(self.kb, self.memory, as_of)        # deterministic notes first; a predictor may add more
+        reflect = getattr(self.predictor, "reflect", None)
+        if reflect:
+            reflect(self.view, events)
+        return {"as_of": as_of, "new_events": len(events), "kb": self.kb.summary(),
+                "notes": self.memory.drain()}
 
     def change_task(self, ref):
         """The host names a task only by kind + number; its words come from the sandbox's own store,
@@ -172,6 +180,14 @@ class Worker:
         op = msg["op"]
         if op == "advance":
             return self.advance(msg["as_of"], msg["events"])
+        if op == "memory_import":
+            if self.view.as_of is not None:
+                raise LeakageError("a notebook can only be imported before the first step")
+            try:
+                self.memory.import_notes(msg["notes"], msg["start"])
+            except NoteError as e:
+                raise LeakageError(str(e)) from e
+            return {"imported": len(msg["notes"])}
         if op == "risky":
             return self._out(self.predictor.risky_commits(self.view, self._rows(msg["candidates"])))
         if op == "tests":
@@ -186,6 +202,7 @@ class Worker:
                     "preview": (out.get("preview") or "")[:2000] or None}
         if op == "stats":
             return {"predictor": dict(getattr(self.predictor, "stats", {}) or {}), "kb": self.kb.summary(),
+                    "memory": self.memory.summary(self.view.as_of),
                     "code_files_reindexed": self.view.code.reindexed}
         if op == "probe":
             return self.probe(msg)
