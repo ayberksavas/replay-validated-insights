@@ -1,9 +1,10 @@
 """Knowledge-base predictors without an LLM. These are the strong baselines the LLM agent must beat.
 Weights are hand-set (just-in-time defect prediction style: size, spread, bug-prone files, author experience)."""
 import math
+import re
 from .kb import KnowledgeBase
 from .kb.links import refs
-from .predictor import Flag, Predictor
+from .predictor import Flag, Predictor, task_text
 
 L = math.log1p
 
@@ -58,3 +59,16 @@ class KBHeuristic(Predictor):
         for n in refs(text) & known - {issue["number"]}:   # explicitly mentioned past issues rank first
             hits[n] = top + 1.0 + hits.get(n, 0.0)
         return [Flag(n, s) for n, s in sorted(hits.items(), key=lambda x: -x[1])[:k]]
+
+    def predict_change(self, view, task, k):
+        """Where will the change land? BM25 from the task's words to the code as of T (paths weigh 3x),
+        a file named in the task first, earlier bug fixes on a file as a tie-breaker."""
+        kb, text = self.kb(view), task_text(task)
+        hits = dict(view.code.search(text, k=max(k, 20)))
+        low = text.lower()
+        for p in view.code.files():
+            stem = p.rsplit("/", 1)[-1].rsplit(".", 1)[0].lower()
+            if len(stem) >= 5 and stem != "__init__" and re.search(r"\b" + re.escape(stem) + r"\b", low):
+                hits[p] = hits.get(p, 0.0) + 3.0
+        score = {p: s + 0.3 * L(kb.file_stats(p)["fixes"]) for p, s in hits.items()}
+        return {"files": sorted(score, key=lambda p: (-score[p], p))[:k]}

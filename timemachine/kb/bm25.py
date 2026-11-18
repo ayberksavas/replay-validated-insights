@@ -40,6 +40,18 @@ class BM25:
             self.df[w] += 1
             self.inv[w].append(doc_id)
 
+    def remove(self, doc_id):
+        """Drop a document (used when a code file changes or disappears between two steps)."""
+        c = self.tf.pop(doc_id, None)
+        if c is None:
+            return
+        self.total_len -= self.len.pop(doc_id)
+        for w in c:
+            self.df[w] -= 1
+            if not self.df[w]:
+                del self.df[w]
+            self.inv[w].remove(doc_id)
+
     def search(self, query_tokens: list[str], k: int, exclude=()) -> list[tuple]:
         n = len(self.tf)
         avg = self.total_len / n if n else 0.0

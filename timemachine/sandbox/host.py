@@ -24,7 +24,7 @@ from ..timeline import Timeline
 
 # The only modules that exist inside the sandbox.
 SANDBOX_MODULES = ("__init__.py", "store.py", "predictor.py", "heuristics.py", "insight.py",
-                   "kb/__init__.py", "kb/base.py", "kb/bm25.py", "kb/events.py", "kb/links.py",
+                   "kb/__init__.py", "kb/base.py", "kb/bm25.py", "kb/code.py", "kb/events.py", "kb/links.py",
                    "sandbox/__init__.py", "sandbox/jail.py", "sandbox/worker.py")
 PKG_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -225,6 +225,10 @@ class SandboxHost:
     def similar(self, issue: dict, k: int):
         q = {"number": issue["number"], "title": issue["title"], "body": issue.get("body") or ""}
         return [Flag(*f) for f in self._call({"op": "similar", "issue": q, "k": k})]
+
+    def predict_change(self, task: dict, k: int) -> dict:
+        """task = {"kind": "issue"|"pr", "number": N}: only a reference; the sandbox reads the words itself."""
+        return self._call({"op": "change", "task": {"kind": task["kind"], "number": task["number"]}, "k": k})
 
     def worker_stats(self) -> dict:
         return self._call({"op": "stats"})
