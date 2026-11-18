@@ -5,3 +5,4 @@ __pycache__/
 .pytest_cache/
 # regenerable: tm ingest <owner/repo>
 data/
+.venv/

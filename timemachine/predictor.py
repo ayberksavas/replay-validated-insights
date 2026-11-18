@@ -8,6 +8,7 @@ from dataclasses import dataclass
 class Flag:
     target: str | int   # commit sha (outputs 1,2) or issue number (output 3)
     score: float
+    why: str = ""         # optional one-line rationale (LLM predictors)
 
 
 class Predictor:

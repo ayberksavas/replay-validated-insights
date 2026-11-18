@@ -33,14 +33,14 @@ class TimeView:
         self.db.set_authorizer(lambda action, *_: sqlite3.SQLITE_DENY if action == sqlite3.SQLITE_ATTACH else sqlite3.SQLITE_OK)
 
     def _copy(self, src, table, where, params):
-        rows = src.execute(f"SELECT * FROM {table} WHERE {where}", params).fetchall()
+        rows = src.execute(f"SELECT * FROM {table} WHERE {where} ORDER BY rowid", params).fetchall()
         if rows:
             q = ",".join("?" * len(rows[0]))
             self.db.executemany(f"INSERT INTO {table} VALUES({q})", [tuple(r) for r in rows])
 
     # ---- history ----
     def commits(self, since: int | None = None):
-        return self.db.execute("SELECT * FROM commits WHERE ts>=? ORDER BY ts", (since or 0,)).fetchall()
+        return self.db.execute("SELECT * FROM commits WHERE ts>=? ORDER BY ts, sha", (since or 0,)).fetchall()
 
     def files(self, sha):
         return self.db.execute("SELECT * FROM commit_files WHERE sha=?", (sha,)).fetchall()
@@ -49,25 +49,26 @@ class TimeView:
         q, p = "SELECT * FROM issues WHERE ts>=?", [since or 0]
         if is_pr is not None:
             q += " AND is_pr=?"; p.append(int(is_pr))
-        return self.db.execute(q + " ORDER BY ts", p).fetchall()
+        return self.db.execute(q + " ORDER BY ts, number", p).fetchall()
 
     def issue_state(self, number):
         """State of an issue as of T, reconstructed from timestamped events."""
         state, labels = "open", set()
-        for e in self.db.execute("SELECT * FROM issue_events WHERE number=? ORDER BY ts", (number,)):
+        for e in self.db.execute("SELECT * FROM issue_events WHERE number=? ORDER BY ts, rowid", (number,)):
             d = json.loads(e["data"])
             if e["type"] in ("closed", "merged"):
                 state = "closed"
             elif e["type"] == "reopened":
                 state = "open"
             elif e["type"] == "labeled":
-                labels.add(d["label"])
+                if d.get("label") is not None:
+                    labels.add(d["label"])
             elif e["type"] == "unlabeled":
                 labels.discard(d["label"])
         return {"state": state, "labels": sorted(labels)}
 
     def comments(self, number):
-        return self.db.execute("SELECT * FROM comments WHERE number=? ORDER BY ts", (number,)).fetchall()
+        return self.db.execute("SELECT * FROM comments WHERE number=? ORDER BY ts, id", (number,)).fetchall()
 
     # ---- code at a commit (guarded) ----
     def _check(self, sha):

@@ -61,3 +61,41 @@ def export_snapshot(repo: str, as_of: int, dest: str, history: bool = False) -> 
     if git(dest, "remote"):
         raise RuntimeError("snapshot unexpectedly has a remote")
     return sha
+
+
+class IncrementalSnapshot:
+    """A git repo (inside the sandbox) that only ever holds the history up to the current T.
+    update(T) fetches just the objects that are new since the previous update, then checks out the
+    code as of T. Like export_snapshot(history=True): no remote, no tags, no reflog, no FETCH_HEAD."""
+
+    def __init__(self, repo: str, dest: str):
+        self.src, self.dest = os.path.realpath(repo), os.path.realpath(dest)
+        if os.path.commonpath([self.src, self.dest]) in (self.src, self.dest):
+            raise ValueError("dest must be outside the source clone (and vice versa)")
+        if os.path.exists(self.dest) and os.listdir(self.dest):
+            raise FileExistsError(f"{self.dest} is not empty")
+        os.makedirs(self.dest, exist_ok=True)
+        git(self.dest, "init", "-q", "-b", "main")
+        self.sha = None
+        self._ref = f"refs/tm/snap-{os.getpid()}-{id(self):x}"   # unique: several sandboxes may share a clone
+
+    def update(self, as_of: int) -> str | None:
+        try:
+            sha = commit_at(self.src, as_of)
+        except ValueError:
+            return self.sha            # nothing on the default branch yet at T
+        if sha == self.sha:
+            return sha
+        git(self.src, "update-ref", self._ref, sha)
+        try:
+            git(self.dest, "fetch", "-q", "--no-tags", self.src, f"{self._ref}:{self._ref}")
+        finally:
+            git(self.src, "update-ref", "-d", self._ref)
+        git(self.dest, "checkout", "-q", "-f", "-B", "main", sha)
+        git(self.dest, "update-ref", "-d", self._ref)
+        fetch_head = os.path.join(self.dest, ".git", "FETCH_HEAD")
+        if os.path.exists(fetch_head):
+            os.remove(fetch_head)
+        shutil.rmtree(os.path.join(self.dest, ".git", "logs"), ignore_errors=True)
+        self.sha = sha
+        return sha
