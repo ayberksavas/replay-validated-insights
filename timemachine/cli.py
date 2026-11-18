@@ -38,6 +38,12 @@ def add_replay_args(p, demo=False):
                         "auto = live if Anthropic credentials are found")
     p.add_argument("--model", default=None, help="Claude model for claude_insight (default claude-opus-5-5)")
     p.add_argument("--token-budget", type=int, default=300_000, help="stop calling Claude after this many tokens")
+    p.add_argument("--memory", default=None, metavar="NOTEBOOK",
+                   help="claude_insight: read/write dated insight notes in this per-repo JSONL notebook and put the "
+                        "relevant ones in its prompts (a notebook with notes newer than the first T is refused)")
+    p.add_argument("--memory-mode", choices=["real", "generic", "shuffled"], default="real",
+                   help="with --memory: real = the notes as written; generic / shuffled = placebo controls with the same "
+                        "notes retrieved but no facts / another file's facts (use a separate notebook path)")
     p.add_argument("--keep-dup-markers", action="store_true",
                    help="do not redact 'duplicate of #N' from Output 3 queries (they leak the answer)")
     p.add_argument("--json", dest="json_out", help="write the full result as JSON")
@@ -130,9 +136,10 @@ def main():
         print(json.dumps(out, indent=2))
         return
     llm = make_llm(a, d, names)
+    mem = {"memory_paths": {"claude_insight": a.memory}, "options": {"claude_insight": {"memory": a.memory_mode}}} if a.memory else {}
     if a.cmd == "replay":
         res = replay_incremental(db, repo, names, times, window_days=a.window_days, lookback_days=a.lookback_days,
-                                 redact=redact, llm=llm, runtime=a.sandbox, image=a.docker_image)
+                                 redact=redact, llm=llm, runtime=a.sandbox, image=a.docker_image, **mem)
         print(json.dumps(res["results"], indent=2)); print(json.dumps(res["run"], indent=2))
     else:
         from .report import Console, render_html
@@ -140,7 +147,7 @@ def main():
         con.header(a, names, llm, times)
         res = replay_incremental(db, repo, names, times, window_days=a.window_days, lookback_days=a.lookback_days,
                                  redact=redact, llm=llm, code_snapshot=set() if a.no_code_snapshot else {names[-1]}, on_step=con.step, probe=True,
-                                 runtime=a.sandbox, image=a.docker_image)
+                                 runtime=a.sandbox, image=a.docker_image, **mem)
         con.footer(res)
         html = a.html or os.path.join(d, "demo_report.html")
         with open(html, "w", encoding="utf-8") as f:

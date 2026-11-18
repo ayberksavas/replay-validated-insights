@@ -24,7 +24,7 @@ from ..timeline import Timeline
 
 # The only modules that exist inside the sandbox.
 SANDBOX_MODULES = ("__init__.py", "store.py", "predictor.py", "heuristics.py", "insight.py",
-                   "kb/__init__.py", "kb/base.py", "kb/bm25.py", "kb/code.py", "kb/events.py", "kb/links.py",
+                   "kb/__init__.py", "kb/base.py", "kb/bm25.py", "kb/code.py", "kb/events.py", "kb/links.py", "kb/memory.py",
                    "sandbox/__init__.py", "sandbox/jail.py", "sandbox/worker.py")
 PKG_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -115,7 +115,8 @@ def _inside(path, root):
 
 class SandboxHost:
     def __init__(self, db_path, repo, predictor="kb_heuristic", options=None, root=None, llm=None,
-                 code_snapshot=False, timeline: Timeline | None = None, runtime="process", image=DEFAULT_IMAGE):
+                 code_snapshot=False, timeline: Timeline | None = None, runtime="process", image=DEFAULT_IMAGE,
+                 memory_path=None):
         """runtime: "process" (local python -I + audit-hook jail) or "docker" (the same worker inside a
         container: no network, read-only root fs, no capabilities, unprivileged user, jail still on)."""
         require_repo(repo)
@@ -130,6 +131,7 @@ class SandboxHost:
         install_package(self.root)
         self.timeline = timeline.fork() if timeline is not None else Timeline(db_path)
         self.llm = llm
+        self.memory_path, self._warm = memory_path, memory_path is None   # per-repo notebook (JSONL), see kb/memory.py
         self.stats = Counter()
         self.code = IncrementalSnapshot(self._repo, os.path.join(self.root, "code")) if code_snapshot else None
         self._log = open(os.path.join(self.root, "worker.log"), "wb")
@@ -209,12 +211,34 @@ class SandboxHost:
     # ---- time machine API ----
     def advance(self, t: int, snapshot: bool = False) -> dict:
         events = self.timeline.advance(t)
+        if not self._warm:
+            self._warm = True
+            stored = self._read_notebook()
+            if stored:   # refused by the sandbox if any stored note is newer than this first T
+                self._call({"op": "memory_import", "notes": stored, "start": t})
+                self.stats["notes_imported"] += len(stored)
         out = self._call({"op": "advance", "as_of": t, "events": events})
+        self._write_notebook(out.get("notes") or [])
         self.stats["events_sent"] += len(events)
         self.stats["steps"] += 1
         if snapshot and self.code is not None:
             out["code_sha"] = self.code.update(t)
         return out
+
+    def _read_notebook(self):
+        if not self.memory_path or not os.path.exists(self.memory_path):
+            return []
+        with open(self.memory_path, encoding="utf-8") as f:
+            return [json.loads(l) for l in f if l.strip()]
+
+    def _write_notebook(self, notes):
+        if not notes or not self.memory_path:
+            return
+        os.makedirs(os.path.dirname(os.path.abspath(self.memory_path)), exist_ok=True)
+        with open(self.memory_path, "a", encoding="utf-8") as f:
+            for n in notes:
+                f.write(json.dumps(n, sort_keys=True) + "\n")
+        self.stats["notes_written"] += len(notes)
 
     def risky(self, shas):
         return [Flag(*f) for f in self._call({"op": "risky", "candidates": list(shas)})]

@@ -22,6 +22,7 @@ import difflib
 import json
 import math
 import re
+import zlib
 from collections import Counter
 
 from .heuristics import KBHeuristic
@@ -63,6 +64,13 @@ documentation and build/CI changes score low.
 Calibrate across the batch: typically only about one commit in five is later traced to a bug. Use \
 the whole 0-100 range and make the scores rank the packets; do not give everything a middle value. \
 Return exactly one entry per packet id, using the ids as given."""
+
+MEMORY_SYSTEM = """
+
+You may also get NOTES FROM EARLIER STEPS above the packets: short, dated observations this assistant \
+wrote about this repository at earlier points in its history (for example files that kept needing bug \
+fixes). They are hints, not facts about the packets in front of you: they can be outdated, and the \
+evidence in the packet wins when they disagree. Use a note only when the packet touches what it names."""
 
 COMMIT_SCHEMA = {
     "type": "object",
@@ -281,8 +289,12 @@ class ClaudeInsight(KBHeuristic):
 
     def __init__(self, prefilter=0.5, min_llm=3, max_llm=12, diff_lines=40, per_file=12, issue_pool=8,
                  gate_ratio=2.0, effort="low", measure_naive=True, change_pool=8, patch_files=2, patch_lines=300,
-                 patch_effort="medium", write_patches=True):
+                 patch_effort="medium", write_patches=True, memory=False, notes_per_request=6, note_chars=220):
         super().__init__()
+        # memory: False | True/"real" (the notes as written) | "generic" / "shuffled" (placebo controls, see _placebo)
+        if memory not in (False, True, "real", "generic", "shuffled"):
+            raise ValueError(f"memory must be one of False, True, real, generic, shuffled; got {memory!r}")
+        self.memory, self.notes_per_request, self.note_chars = memory, notes_per_request, note_chars
         self.change_pool, self.patch_files, self.patch_lines = change_pool, patch_files, patch_lines
         self.patch_effort, self.write_patches = patch_effort, write_patches
         self.prefilter, self.min_llm, self.max_llm = prefilter, min_llm, max_llm
@@ -292,6 +304,48 @@ class ClaudeInsight(KBHeuristic):
         self.stats = Counter()
         self._review_key, self._review = None, None
         self._diffs = (None, {})      # diffs of the current step, fetched from the host once
+
+    # ---- insight memory: notes written at earlier steps (kb/memory.py), read at this step ----
+    def _sys(self, base):
+        return base + MEMORY_SYSTEM if self.memory else base
+
+    def _notes(self, view, paths=(), text="", k=None):
+        """Notes dated <= T that are relevant to these files / this text, as a prompt block ('' when none).
+        They go in the user turn, so the cached system prompt stays fixed."""
+        mem = getattr(view, "memory", None) if self.memory else None
+        if mem is None or view.as_of is None:
+            return ""
+        notes = mem.retrieve(view.as_of, paths=paths, text=text, k=k or self.notes_per_request)
+        if not notes:
+            return ""
+        if self.memory in ("generic", "shuffled"):
+            notes = self._placebo(mem, notes, view.as_of)
+        block = "NOTES FROM EARLIER STEPS (dated; may be outdated):\n" + mem.render(
+            [{**n, "claim": clip(n["claim"], self.note_chars)} for n in notes]) + "\n\n"
+        self.stats["notes_used"] += len(notes)
+        self.stats["notes_requests"] += 1
+        self.stats["notes_chars"] += len(block)
+        return block
+
+    def _placebo(self, mem, notes, as_of):
+        """Control for the memory experiment: the same notes are retrieved (same files, same dates, same
+        count, same place in the prompt) but their content is replaced.
+        generic:  "<path>: changed before; changes here deserve extra review and tests."  (no facts, same nudge)
+        shuffled: the fact part ("4 of 18 commits ... fixes") of a different note, deterministically chosen
+                  (wrong facts for the file). Both keep the note's own date and path."""
+        out = []
+        pool = [n for n in mem.active(as_of) if n["kind"] == "file_hotspot"]
+        for n in notes:
+            path = n["scope"][0] if n["scope"] else n["id"]
+            if self.memory == "shuffled":
+                others = [m for m in pool if m["id"] != n["id"]]
+                if others:
+                    m = others[zlib.crc32(f"{n['id']}@{as_of}".encode()) % len(others)]
+                    fact = m["claim"].split(": ", 1)[-1]
+                    out.append({**n, "claim": f"{path}: {fact}"})
+                    continue
+            out.append({**n, "claim": f"{path}: changed before; changes here deserve extra review and tests."})
+        return out
 
     # ---- Outputs 1 + 2: one batched review per step ----
     def _packet(self, view, kb, cid, sha, f, compact=True):
@@ -341,11 +395,13 @@ class ClaudeInsight(KBHeuristic):
         result = {}
         if chosen:
             ids = {f"c{i + 1}": s for i, s in enumerate(chosen)}
-            user = "\n\n".join(self._packet(view, kb, cid, s, feats[s]) for cid, s in ids.items())
+            paths = [x["path"] for s in ids.values() for x in kb.commit_files(s) if not x["is_test"] and not x["is_doc"]]
+            user = self._notes(view, paths=paths) + "\n\n".join(self._packet(view, kb, cid, s, feats[s]) for cid, s in ids.items())
+            system = self._sys(COMMIT_SYSTEM)
             self.stats["requests"] += 1
-            self.stats["prompt_chars"] += len(COMMIT_SYSTEM) + len(user)
-            self.stats["system_chars"] += len(COMMIT_SYSTEM)
-            resp = view.llm(system=COMMIT_SYSTEM, user=user, schema=COMMIT_SCHEMA, effort=self.effort,
+            self.stats["prompt_chars"] += len(system) + len(user)
+            self.stats["system_chars"] += len(system)
+            resp = view.llm(system=system, user=user, schema=COMMIT_SCHEMA, effort=self.effort,
                             max_tokens=4000, tag="commits")
             rows = _parse(resp, "commits")
             if rows is None:
@@ -416,12 +472,14 @@ class ClaudeInsight(KBHeuristic):
             info = kb.issues[n]
             tags = ", ".join([kb.issue_state.get(n, "open")] + kb.labels(n)[:3])
             cand.append(f"{cid} [{tags}] {clip(info['title'], 100)} | {clip(info['body'], 180)}")
-        user = f"NEW: {clip(issue['title'], 140)}\n{clip(issue['body'], 500)}\n\nCANDIDATES:\n" + "\n".join(cand)
+        user = (self._notes(view, text=text, k=3)
+                + f"NEW: {clip(issue['title'], 140)}\n{clip(issue['body'], 500)}\n\nCANDIDATES:\n" + "\n".join(cand))
+        system = self._sys(ISSUE_SYSTEM)
         self.stats["requests"] += 1
         self.stats["issue_llm"] += 1
-        self.stats["prompt_chars"] += len(ISSUE_SYSTEM) + len(user)
-        self.stats["system_chars"] += len(ISSUE_SYSTEM)
-        rows = _parse(view.llm(system=ISSUE_SYSTEM, user=user, schema=ISSUE_SCHEMA, effort=self.effort,
+        self.stats["prompt_chars"] += len(system) + len(user)
+        self.stats["system_chars"] += len(system)
+        rows = _parse(view.llm(system=system, user=user, schema=ISSUE_SCHEMA, effort=self.effort,
                                max_tokens=2000, tag="issues"), "matches")
         if rows is None:
             self.stats["fallback_requests"] += 1
@@ -449,13 +507,15 @@ class ClaudeInsight(KBHeuristic):
         for cid, p in ids.items():
             body = view.code.read(p)
             lines.append(f"{cid} {p} ({body.count(chr(10)) + 1} lines): {', '.join(view.code.outline(p)) or '-'}")
-        user = f"TASK ({task['kind']} #{task['number']}):\n{text}\n\nCANDIDATE FILES:\n" + "\n".join(lines)
+        user = (self._notes(view, paths=list(ids.values()), text=text, k=4)
+                + f"TASK ({task['kind']} #{task['number']}):\n{text}\n\nCANDIDATE FILES:\n" + "\n".join(lines))
         if self.measure_naive:   # naive: the task plus every shortlisted file in full, one big request
             self.stats["change_naive_chars"] += len(PATCH_SYSTEM) + len(text) + sum(len(view.code.read(p)) for p in ids.values())
         self.stats["requests"] += 1
-        self.stats["change_prompt_chars"] += len(LOCALIZE_SYSTEM) + len(user)
-        self.stats["system_chars"] += len(LOCALIZE_SYSTEM)
-        rows = _parse(view.llm(system=LOCALIZE_SYSTEM, user=user, schema=LOCALIZE_SCHEMA, effort=self.effort,
+        system = self._sys(LOCALIZE_SYSTEM)
+        self.stats["change_prompt_chars"] += len(system) + len(user)
+        self.stats["system_chars"] += len(system)
+        rows = _parse(view.llm(system=system, user=user, schema=LOCALIZE_SCHEMA, effort=self.effort,
                                max_tokens=2000, tag="localize"), "files")
         if rows is None:
             self.stats["fallback_requests"] += 1

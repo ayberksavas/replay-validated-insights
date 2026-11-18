@@ -103,8 +103,9 @@ def plan_checkpoints(oracle, replay_times, lookback_days):
 
 def replay_incremental(db_path, repo, predictors, replay_times, window_days=180, lookback_days=30, top_frac=0.2,
                        k=5, redact=True, llm=None, options=None, sandbox_dirs=None, code_snapshot=False,  # bool or set of names
-                       on_step=None, probe=False, runtime="process", image=None):
-    """predictors: names (random, most_changed_files, kb_heuristic, claude_insight). Returns
+                       on_step=None, probe=False, runtime="process", image=None, memory_paths=None):
+    """memory_paths: {predictor: notebook .jsonl} (per repo; see kb/memory.py).
+    predictors: names (random, most_changed_files, kb_heuristic, claude_insight). Returns
     {"results": [summary per predictor], "run": run stats, "steps": per-T log}."""
     from .sandbox.host import SandboxHost
     from .timeline import Timeline
@@ -122,7 +123,7 @@ def replay_incremental(db_path, repo, predictors, replay_times, window_days=180,
     try:
         for name in predictors:
             hosts[name] = SandboxHost(db_path, repo, name, options=(options or {}).get(name), llm=llm,
-                                      root=(sandbox_dirs or {}).get(name),
+                                      root=(sandbox_dirs or {}).get(name), memory_path=(memory_paths or {}).get(name),
                                       code_snapshot=(name in code_snapshot) if isinstance(code_snapshot, (set, list, tuple)) else code_snapshot,
                                       timeline=timeline, runtime=runtime, **({"image": image} if image else {}))
         rows = {n: {"risky": [], "tests": [], "dups": defaultdict(lambda: [0, 0])} for n in hosts}
